@@ -1,11 +1,11 @@
 <header>
-	{{ strings.Repeat ( .Site.Title | len | add 6 ) "=" }}<br>
-	== <a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a> ==<br>
-	{{ strings.Repeat ( .Site.Title | len | add 6 ) "=" }}
+	{{ strings.Repeat ( .Site.Title | len | add 19 ) "=" }}<br>
+	<a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a> - <a href="https://github.com/maxgio92"><b>Github</b></a> - <a href="https://twitter.com/maxgio92"><b>Twitter</b></a><br>
+	{{ strings.Repeat ( .Site.Title | len | add 19 ) "=" }}
 	<div style="float: right;">{{ .Site.Params.subtitle }}</div><br>
 	<p>
 	<nav>
-			<a href="/"><b>Start</b></a>. <a href="/posts"><b>All posts</b></a>.
+			<a href="/"><b>Home</b></a>. <a href="/posts"><b>All posts</b></a>.
 			{{ with .Site.Menus.main }}
 			{{ range . }}
 			<a href="{{ .URL | relURL }}"><b>{{ .Name }}</b></a>.

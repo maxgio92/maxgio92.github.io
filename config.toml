@@ -1,0 +1,4 @@
+baseURL = "http://maxgio92.github.io/"
+languageCode = "en-us"
+title = "Maxgio's blog"
+theme = "smol"

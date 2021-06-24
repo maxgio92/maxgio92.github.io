@@ -1,6 +1,6 @@
 ---
 title: "STRIDE threat modeling on Kubernetes pt.6/6: Elevation of privileges"
-date: 2021-05-08T18:36:15+02:00
+date: 2021-06-24T17:07:15+02:00
 tags: [kubernetes, security]
 categories: [kubernetes]
 slug: stride-threat-modeling-kubernetes-elevation-of-privileges
@@ -42,7 +42,9 @@ In detail not using default `ServiceAccount` and configuring and binding [proper
 At the same time we should consider that also Kubernetes components like `kubelet` is authorized to access Kubernetes resources like `Secrets` through [Node Authorization](https://kubernetes.io/docs/reference/access-authn-authz/node/).
 And not only in-cluster authorized requests, but also ones that are authorized externally, like users that are authenticated and authorized by cloud provider/on-premise IAM services through OIDC or SAML flows.
 
-Furthermore, authorized workload runs in the clusters and sometimes can make API requests to Kubernetes. In the era of GitOps we let further workload to reconcile workload as we'd desire. So keep in mind which privileges GitOps controllers need and apply least privileg principle also there. The work that Flux team is doing for [modeling](https://github.com/fluxcd/flux2/pull/582) their API considering complex scenarios like multi-tenancy is great. Talking about access control in multi-tenancy scenarios [Capsule](https://github.com/clastix/capsule) is an interesting project which can help with managing access control easily.
+Furthermore, authorized workload runs in the clusters and sometimes can make API requests to Kubernetes. In the era of GitOps we let further workload to reconcile workload as we'd desire. So keep in mind which privileges GitOps controllers need and apply least privileg principle also there. The work that Flux team is doing for [modeling](https://github.com/fluxcd/flux2/pull/582) their API considering complex scenarios like multi-tenancy is great.
+
+Talking about access control in multi-tenancy scenarios [Capsule](https://github.com/clastix/capsule) is an interesting project which can help with managing access control easily.
 
 ### OS
 
@@ -98,19 +100,46 @@ From the [decision on removal](https://groups.google.com/g/kubernetes-sig-auth/c
 Auditing at the operating system level can be looked at by inspecting the requests that the containers (and not only) can fire to interact with the OS, so the system calls. [Falco](https://falco.org) is one of the projects that does exactly that, by capturing, inspecting the fired syscalls and filtering the suspictious ones. Alerts can can be shipped to webhook endpoints and with the addition of [Falco Sidekick](https://github.com/falcosecurity/falcosidekick) to a lot of backends like object storage services or message queues or chats.
 Then, also mitigation can be triggered from detection events in Falco, for example [with Kubeless](https://falco.org/blog/falcosidekick-reponse-engine-part-1-kubeless/).
 
-For sure here eBPF is plays a fundamental role here as it allow to program the kernel in a safe manner and easily inspect kernel events.
+For sure here eBPF plays a fundamental role here as it allow to program the kernel in a safe manner and easily inspect kernel events.
 
 [Inspektor Gadget](https://github.com/kinvolk/inspektor-gadget) is a collection of tools to do inspection inspired by [kubectl-trace](https://github.com/iovisor/kubectl-trace) plugin which schedules [btftrace](https://github.com/iovisor/bpftrace) programs in Kubernetes clusters. The most relevant gadget for this scope is the [traceloop](https://github.com/kinvolk/traceloop) that can help inspecting system calls requested by Pods also in the past.
 Here what is very interesing is also the [capabilities](https://github.com/kinvolk/inspektor-gadget/blob/master/docs/guides/capabilities.md) gadget that can help to tailor our Pod container's `SecurityContext`s.
-What is missing here is a filtering layer that can fill an alert system for suspictious behaviour.
+What we'd need then is a filtering layer that can fill an alert system for suspictious behaviour.
 
 ## Known vulnerabilities
 
-- https://info.sysdig.com/XhR0P5Z0E000TP7Ib006QR0
-- https://sysdig.com/blog/cve-2020-14386-falco/
+Now that we reason about some vectors, let's list known vulnerabilities from which we can defend with detection and prevention.
+
+### [CVE-2020-14386](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-14386)
+
+In a couple of words, this can be exploited with kernels before 5.9-rc4. As this privilege escalation work using raw sockets and by default Kubernetes adds `CAP_NET_RAW` capabilities to the pods, As you may guess, a `PodSecurityPolicy` that drops this capability can work. But I recommend to dig into it.
+
+See [here](https://sysdig.com/blog/cve-2020-14386-falco/) how to detect and mitigate with Falco.
+
+### [CVE-2020-8559](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-8559)
+
+The API server in versions from v1.6 to v1.15 and prior to v1.16.13, v1.17.9 and v1.18.6 are vulnerable to an unvalidated re-direct on proxied upgrade requests that could allow an attacker to escalate privileges from a node compromise to a full cluster compromise. So, let's keep Kubernetes up-to-date.
+
+Also, we can leverage a tool to hunt on our cluster for weaknesses, which is [kube-hunter](https://github.com/aquasecurity/kube-hunter). You can run it on an external machine or within the cluster on the machine or in a pod.
+
+## Conclusion
+
+So we talk about what privilege escalation is, which are the resources that we should protect, both when we do prevention and when we do detection.
+
+## Another conclusion
+
+As we go through this journey I learnt a lot of stuff that was new to me. When preparing this part and re-reading the first ones I thought: "What is this? Was it me? I should not publish this", and I was going to delete and re-write them. I saw a very different approach, a different consciousness and confusion of what I was talking about.
+
+But I thought that this is part of our journey. And I let them published with pride.
+
+What I'm tying to say, is that we have **another conclusion**. No one will know everything and we **always** are in a continuous journey.
+We have a lot of value in sharing what we learn and our thoughts. This is why I opened this blog, because I believe in it.
+
+So.. Let's keep in touch here, on Twitter, Github or anywhere you want!
 
 
 ## Credits
+
 - [Kubernetes audit docs](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/)
 - [Kubernetes audit API](https://kubernetes.io/docs/reference/config-api/apiserver-audit.v1)
 - [Sysdig blog](https://docs.sysdig.com/en/kubernetes-audit-logging.html)

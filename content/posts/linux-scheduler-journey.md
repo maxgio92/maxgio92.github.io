@@ -45,11 +45,15 @@ Based on that, time accounting is what guarantees fairness in Linux CFS schedule
 
 ## Time accounting
 
-This comes to the time accounting, of which the implementation is represented by the [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function. It measures the task [execution time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L853) (`delta_exec`) scaled by the number of running processes, so that each task run for the same time.
+This comes to the time accounting, so let's start to dig into it! 
+
+The implementation is written in the [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function. It measures the tasks' [execution time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L853) (`delta_exec`) scaled by the number of running processes, so that each task run for the same time.
 
 The execution time is further weighted to implement priority between tasks. This is done by the [delta fair calculation](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L244).
 
-For example, if every T time period two tasks A and B run respectively with a weight of 1 and 2, the allocated CPU time is obtained by multiplying T by the ratio of the weight to the sum of the weights of all running tasks:
+#### Example
+
+Let' do an example: if every T time period two tasks A and B run respectively with a weight of 1 and 2, the allocated CPU time is obtained by multiplying T by the ratio of the weight to the sum of the weights of all running tasks:
 
 ```
 CPU time(A) = T * (1 / (1 + 2))).

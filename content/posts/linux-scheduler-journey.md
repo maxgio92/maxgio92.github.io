@@ -9,7 +9,7 @@ draft: false
 Two years ago more or less I started my journey in Linux. I was scared at first and I didn't know where to start from.
 But then I decided to start from a [book](https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468) in order to follow a path.
 
-Along the way I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org). In the meantime I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
+Along the way I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org) and [source code](https://elixir.bootlin.com/linux/v5.17.9/source). In the meantime I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
 
 One of the things I was fascinated by was how Linux is able to manage and let the CPU run thousands and thousands of processes each second.
 To give you an idea, just now Linux on my laptop configured with an Intel i7-1185G7 CPU within only one second did 28,428 context switches! That’s fantastic, isn’t it?
@@ -27,14 +27,16 @@ So here I am with with a blog.
 
 ## Resource sharing is the key!
 
-Let’s dive into the Linux component which is responsible of doing such great work. In order to do it imagine what we would expect from an operating system. Let's say that we’d want it to run tasks that we need to complete, providing the OS hardware resources.
+Let’s dive into the Linux component which is responsible of doing such great work: the scheduler.
 
+In order to do it imagine what we would expect from an operating system. Let's say that we’d want it to run tasks that we need to complete, providing the OS hardware resources.
 Tasks come of different natures but we can simply categorise them as CPU intensive and interactive ones.
+
 Something should provide the efficiency of tasks completion and responsiveness. Consider a typewriter that prints letters with 1s second of delay, it would be impossible to use!
-So, in few words I would like to say to the scheduler: “I want to execute this task and I want it’s completed when I need or to respond when I need”.
+So, in few words I would like to request to the scheduler: “I want to execute this task and I want it’s completed when I need or to respond when I need”.
 The goal of a scheduler is to decide “what runs next” leading to have the best balance between the needings of the different natures of the tasks.
 
-The completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity is O(log N).
+The completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity saw an improvement from O(1) to O(log N).
 
 As a side note consider that the Linux scheduler is made of different [scheduler classes](https://www.kernel.org/doc/html/v5.17/scheduler/sched-design-CFS.html#scheduling-classes) ([code](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L2117)), of which the [CFS class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11737) is the highest-priority one. Another one is the [real time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/rt.c#L2642) scheduler class, tailored as the name suggests for tasks that need responsiveness.
 
@@ -51,7 +53,6 @@ For example, if every T time period two tasks A and B run respectively with a we
 
 ```
 CPU time(A) = T * (1 / (1 + 2))).
-
 CPU time(B) = T * (2 / (1 + 2))).
 ```
 

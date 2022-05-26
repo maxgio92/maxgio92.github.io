@@ -310,7 +310,7 @@ Instead, in order to clarify when the flag is checked we can think about when a 
 
 Returning [from kernelspace to userspace](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L301) is safe to context switch: if it is safe to continue executing the
 current task, it is also safe to pick a new task to execute. Has this userspace task still to run? Maybe it’s no longer fair to run it. This is what happens when from:
-- [system calls](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L336))
+- [system calls](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L336)
 - [interrupt handlers](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L380)
 
 return to userspace.

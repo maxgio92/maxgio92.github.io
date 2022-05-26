@@ -1,5 +1,3 @@
-New
-
 ---
 title: "Introduction to the Linux Scheduler"
 date: 2022-05-02T18:36:15+02:00
@@ -28,14 +26,13 @@ During this journey inside Linux, I've written notes as it helps me to digest an
 So let’s dive into the Linux component which is responsible of doing such great work. In order to do it imagine what we would expect from an operating system. Let's say that we’d want to run tasks that we need to complete, providing the OS hardware resources.
 
 Tasks come of different natures but we can simply categorise them as CPU intensive and interactive ones.
-Something should provide the efficiency of tasks completion and responsiveness.
-Consider a typewriter that prints letters with one second of delay, it would be impossible to use!
+Something should provide the efficiency of tasks completion and responsiveness. Consider a typewriter that prints letters with one second of delay, it would be impossible to use!
 So, in few words I would like to say to the scheduler: “I want to execute this task and I want it’s completed when I need or to respond when I need”.
 The goal of a scheduler is to decide “what runs next” leading to have the best balance between the needings of the different natures of the tasks.
 
 The completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee better fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks.
 
-As as a side note consider that the Linux scheduler is made of different scheduler classes, of which the CFS is the default one. Another one is the realm time scheduler, tailored as the name suggests for tasks that need responsiveness.
+As as a side note consider that the Linux scheduler is made of different scheduler classes, of which the CFS is the default one. Another one is the real time scheduler, tailored as the name suggests for tasks that need responsiveness.
 
 Interactive tasks would run for small amounts of time but need to run quickly as events happen. CPU-intensive tasks don’t require to complete ASAP, but require CPU time.
 Based on that, time accounting is what guarantees fairness in Linux CFS scheduler as long as the task who run for less time will run next.
@@ -43,16 +40,14 @@ Based on that, time accounting is what guarantees fairness in Linux CFS schedule
 ## Time accounting
 
 This comes to the time accounting, which is implemented by measuring the task execution time (stored in the [scheduler entity](TODO:link) structure as `delta_exec`) and scaled by the number of runnable processes (the load) and a weight.
-In turn the weight depends on the nature of the schedule entity. If the entity is a task the weight is represented by the [niceness](https://www.kernel.org/doc/html/latest/scheduler/sched-nice-design.html) value.
+The weight depends on the nature of the schedule entity. If the entity is a task the weight is represented by the [niceness](https://www.kernel.org/doc/html/latest/scheduler/sched-nice-design.html) value.
 If it’s a task group, as the case of a cgroup, the weight is represented by the share value.
 
-Well, actually the accounting for a task group is a bit more complex than this, but for the sake of simplicity let’s remember this: the groups are hierarchical, and each task is part of a one.
-The higher the depth of the hierarchy, the more the weight gets diluted. TODO:clarify.
+Well, actually the accounting for a task group is a bit more complex than this, but for the sake of simplicity let’s remember this: the groups are hierarchical, and each task is part of a one. The higher the depth of the hierarchy, the more the weight gets diluted. Adding a heavily weighted task to one group is not going to afflict TODO:clarify.
 
 Load = relates task weight (nice)
+Runqueue's load is sum of the weight of the tasks of the group
 Share = is group weight per CPU
-
-More on scheduler structures in this [blog](https://josefbacik.github.io/kernel/scheduler/2017/07/14/scheduler-basics.html).
 
 The result is the so called virtual runtime, which is a member of the Scheduler entity structure. More on the load tracking [here](https://lwn.net/Articles/531853/)).
 

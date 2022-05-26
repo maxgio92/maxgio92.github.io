@@ -7,7 +7,9 @@ draft: false
 ---
 
 Two years ago more or less I started my journey in Linux. I was scared at first and I didn't know where to start from.
-But then I decided to start from a [book](https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468) in order to follow a path. During the journey I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org). In the meantime I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
+But then I decided to start from a [book](https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468) in order to follow a path.
+
+Along the way I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org). In the meantime I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
 
 One of the things I was fascinated by was how Linux is able to manage and let the CPU run thousands and thousands of processes each second.
 To give you an idea, just now Linux on my laptop configured with an Intel i7-1185G7 CPU within only one second did 28,428 context switches! That’s fantastic, isn’t it?

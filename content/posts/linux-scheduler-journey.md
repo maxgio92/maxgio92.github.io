@@ -274,18 +274,18 @@ For the sake of simplicity on the path to waking up let’s take the example of 
 Also signals can wake up tasks if they are in [interruptible](https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L84).
 In this case the task code itself should then manage the spurious wake up ([example](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L435)), by checking the event that occurs or [manage the signal](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched/signal.h#L363) (for example [`inotify`](https://elixir.bootlin.com/linux/v5.17.9/source/fs/notify/inotify/inotify_user.c#L235) does it), and call [`finish_wait`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L388) to update its state and remove itself from the wait queue.
 
-As a side note, wake up can be provoked in both process context and interrupt context, during an interrupt handler execution.
+As a detail, wake up can be provoked in both process context and interrupt context, during an interrupt handler execution. Sleep can be only done in process context.
 
 ## Context switch and Preemption
 
 And this comes to the context switch.
-When a task starts to sleep a context switch is needed, and the next task is voluntarily picked and the scheduling is done via [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377).
+For example, when a task starts to sleep a context switch is needed, and the next task is voluntarily picked and the scheduling is done via [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377).
 
 The context switch work is done by [`context_switch()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L4945), called by [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) and executes:
-- `switch_mm()` to switch virtual memory mappings process-specific.
-- `switch_to()` to save and restore stack informations and all registers which contain process-specific data.
+- [`switch_mm()` (x86_64)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/mmu_context.h#L128) (implementation [here](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/mm/tlb.c#L488)) to switch virtual memory mappings process-specific.
+- [`switch_to()` (x86_64)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/entry/entry_64.S#L225) to save and restore stack informations and all registers which contain process-specific data.
 
-Both functions are architecture dependent (ASM) code.
+As you saw, both functions are architecture dependent (ASM) code.
 The context switch is requested by the tasks themselves voluntarily or by the scheduler, nonvoluntarily from the point of view of a task.
 
 ### Voluntarily
@@ -298,7 +298,7 @@ Anyway context switches are not done only when code in kernelspace voluntarily c
 
 As the main Linux scheduler class is a fair scheduler the fairness must be guaranteed in some way... Ok, but how it preempts?
 
-For this purpose a flag named [`need_reschedule`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) is present in the [task struct](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L728) and is set or unset on the current task to notify that it should leave the CPU which in turn, after [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377)` call, will switch to another process context.
+For this purpose a flag named [`need_reschedule`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L83) is present in the [`task_struct`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L734)'s [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) and is set or unset on the current task to notify that it should leave the CPU which in turn, after [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) call, will switch to another process context.
 
 So, when this flag is set?
 - in [`scheduler_tick()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250), which is constantly called by the timer interrupt [handler](https://elixir.bootlin.com/linux/v2.6.39/source/kernel/time/tick-common.c#L63) (the architecture independent part actually), continuously checks (and updates) `vruntime` and sets it when a preemption is needed.
@@ -308,16 +308,16 @@ Instead, in order to clarify when the flag is checked we can think about when a 
 
 ##### In userspace
 
-Returning from kernelspace to userspace is safe to context switch: if it is safe to continue executing the
+Returning [from kernelspace to userspace](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L301) is safe to context switch: if it is safe to continue executing the
 current task, it is also safe to pick a new task to execute. Has this userspace task still to run? Maybe it’s no longer fair to run it. This is what happens when from:
-- system calls
-- interrupt handlers
+- [system calls](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L336))
+- [interrupt handlers](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L380)
 
 return to userspace.
 
-If [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) is set a schedule is needed, the next entity task is picked, and context switch done.
+[If `need_resched` is set](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) a schedule is needed, the next entity task is picked, and context switch done.
 
-> As a note, consider that both these paths are architecture dependent.
+> As a note, consider that both these paths are architecture dependent, and typically implemented in assembly in entry.S (e.g. [x86_64](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/entry/entry_64.S)) which, aside from kernel entry code, also contains kernel exit code).
 
 ##### In kernel space
 
@@ -327,27 +327,58 @@ When preemption can’t be done, locks are in place to mark it, so that a safe s
 
 Basically a lock counter ([`preempt_count`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/preempt.h#L10)) is added to [`thread_info`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L24) struct to let preempt tasks running in kernelspace only when it’s equal to zero.
 
-Upon return from interrupt [x86_64](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/entry/entry_64.S#L380) if returning to kernelspace. If [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) set + [`preempt_count`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/preempt.h#L10) = 0 the current task is preempted, otherwise the interrupt returns to the interrupted task.
+Upon return from interrupt [x86_64](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/entry/entry_64.S#L380) to kernelspace, if [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) set + [`preempt_count`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/preempt.h#L10) = 0 the current task is preempted, otherwise the interrupt returns to the interrupted task.
 Everytime `preempt_count` is updated and decreased to zero, and [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) is set to true, preemption is done.
+
+For example, the check in the [xtensa's ISA common exception exit path](https://elixir.bootlin.com/linux/v5.17.9/source/arch/xtensa/kernel/entry.S#L488) is pretty self-explanatory:
+
+```
+common_exception_return:
+
+	...
+
+#ifdef CONFIG_PREEMPTION
+6:
+	_bbci.la4, TIF_NEED_RESCHED, 4f
+
+	/* Check current_thread_info->preempt_count */
+
+	l32ia4, a2, TI_PRE_COUNT
+	bneza4, 4f
+	abi_callpreempt_schedule_irq
+	j4f
+#endif
+	...
+```
 
 Also, the kernel is [SMP-safe](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/Kconfig#L312) that is, a task can be safely restored in a symmetrical multi processor.
 
-You can check it in the kernel version:
+You can check both [preemption config](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L51) and [SMP config (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/Kconfig#L400) it your running kernel version:
 
 ```
 $ uname -v
 #1 SMP PREEMPT Wed, 27 Apr 2022 20:56:11 +0000
 ```
 
-That’s all folks!
+That’s all folks! We've arrived to the end of this little journey.
+
+## Wrapping up
+
+I didn't want to interrupt the trip but instead leave to you the choice to dig into each single path the kernel does to manage the tasks scheduling. That's why I intentionally didn't include so much snippets, as the code is there and open for you, whenever you want.
+
+> The linked code refers to Linux 5.17.9.
+
+What is incredible is that, even if it's one of the largest OSS projects, you can understand how Linux works and also contribute. That's why I love open source more every time!
 
 # Thank you!
 
-I hope this was interesting for you as it was for me. Please feel free to reach out for everytihng!
+I hope this was interesting for you as it was for me. Please, feel free to reach out!
 
 # Links
 
 - https://www.kernel.org/doc/html/v5.17/scheduler/index.html
+- https://elixir.bootlin.com/linux/v5.17.9/source
+- https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468
 - https://mechpen.github.io/posts/2020-04-27-cfs-group/index.html#2.2.-data-structures
 - https://josefbacik.github.io/kernel/scheduler/2017/07/14/scheduler-basics.html
 - https://opensource.com/article/19/2/fair-scheduling-linux

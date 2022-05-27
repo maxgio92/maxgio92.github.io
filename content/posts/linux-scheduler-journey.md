@@ -25,6 +25,8 @@ During this journey inside Linux, I've written notes as it helps me to digest an
 
 So here I am with with a blog.
 
+---
+
 ## Resource sharing is the key!
 
 Let’s dive into the Linux component which is responsible of doing such great work: the scheduler.
@@ -36,86 +38,118 @@ Something should provide the efficiency of tasks completion and responsiveness. 
 So, in few words I would like to request to the scheduler: “I want to execute this task and I want it’s completed when I need or to respond when I need”.
 The goal of a scheduler is to decide “what runs next” leading to have the best balance between the needings of the different natures of the tasks.
 
-The completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity saw an improvement from O(1) to O(log N).
+As Linux is a *preemptive multitasking* operating system, the completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity saw an improvement from O(1) to O(log N).
 
 As a side note consider that the Linux scheduler is made of different [scheduler classes](https://www.kernel.org/doc/html/v5.17/scheduler/sched-design-CFS.html#scheduling-classes) ([code](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L2117)), of which the [CFS class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11737) is the highest-priority one. Another one is the [real time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/rt.c#L2642) scheduler class, tailored as the name suggests for tasks that need responsiveness.
 
 Interactive tasks would run for small amounts of time but need to run quickly as events happen. CPU-intensive tasks don’t require to complete ASAP, but require CPU time.
 Based on that, time accounting is what guarantees fairness in Linux CFS scheduler as long as the task who run for less time will run next.
 
+---
+
 ## Time accounting
 
 This comes to the time accounting, so let's start to dig into it! 
 
-The implementation is written in the [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function. It measures the tasks' [execution time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L853) (`delta_exec`) scaled by the number of running processes, so that each task run for the same time.
+Linux CFS actually does not directly assign timeslices to tasks (as the O(1) scheduler did), instead it measures execution time, to be flexible with respect to both interactive and processor-intensive tasks.
 
-The execution time is further weighted to implement priority between tasks. This is done by the [delta fair calculation](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L244).
+### The runtime
+
+Remember, the fundamental rule in the Completely Fair Scheduler is: *the task that ran less, will run next*! Which is, each task should have his fair slice of the processor time, *when it needs*!
+For example, interactive tasks can run frequently but for less time than intensive ones, and still have their fair amount of CPU time.
+
+The implementation is written in the [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function, which is called periodically to account tasks for the CPU time they used in the last period ([`delta_exec`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L853)).
+
+### The virtual runtime
+
+The execution time is [further weighted](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L870) to implement priority between tasks. This is done by the [fair delta calculation](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L233). The more the weight, the more the time the task will have.
 
 #### Example
 
-Let' do an example: if every T time period two tasks A and B run respectively with a weight of 1 and 2, the allocated CPU time is obtained by multiplying T by the ratio of the weight to the sum of the weights of all running tasks:
+Let' do an example with timeslices: considering a single CPU, if every T time period two tasks A and B run respectively with a weight of 1 and 2, the allocated CPU time is obtained by multiplying T by the ratio of the weight to the sum of the weights of all running tasks:
 
 ```
-CPU time(A) = T * (1 / (1 + 2))).
-CPU time(B) = T * (2 / (1 + 2))).
+CPU_timeslice(A) = T * (1 / (1 + 2))).
+CPU_timeslice(B) = T * (2 / (1 + 2))).
 ```
 
-For each T time period, task A will run for 1/(1+2)T and task B for 2/(1+2)T. This is ensured by periodically measuring the `runtime` and dividing it by `weight/(sum of the weights)` of all running tasks.
+For each T time period, task A will run for 0.334~T and task B 0.667~T. This is ensured by periodically measuring the `runtime` and multiplying it by `weight/(sum of the weights of all running tasks)`.
 
 ```
-runtime += runtime / (w / ∑ w)).
+runtime += runtime * (w / ∑ w)).
 ```
 
-Then, always the task with the **smallest runtime** will run next.
+Which is exactly what is done in `update_curr()`:
 
-The weight implementation [depends](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L873) on the nature of the schedule entity and is there to implement priority of tasks in Linux.
+```
+static void update_curr(struct cfs_rq *cfs_rq)
+{
+	struct sched_entity *curr = cfs_rq->curr;
+	...
+	delta_exec = now - curr->exec_start;
+	...
+	curr->vruntime += calc_delta_fair(delta_exec, curr);
+	...
+}
+```
 
-> If you want to dive into load tracking, I recommend [this](https://lwn.net/Articles/531853/) LWN article.
+The result is the so called virtual runtime ([`vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L547)).
 
-Before proceeding let’s spend a couple of words about the schedule entities.
+As the weight implementation [depends](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L873) on the nature of the schedulble entities, let's spend a couple of words about them.
+Then, we'll talk more about the schedulable entities runtime's weight.
 
-### Schedule entities
+> Indeed, the [`vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L547) is a member of the [`sched_entity`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L538) structure.
+
+### The schedule entities
 
 Until now we talked about tasks as the only schedulable entity but actually, tasks can be put into group of tasks, in order to treat a group equally to a single task, and have the group share the resources (I.e. CPU) between the entities of the group without afflicting the overall system.
 That’s the case of [cgroups](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L877) and why they’re there, for example.
 
 Also, task groups can be composed of other groups, and there is a root group.
-In the end likely a running Linux is going to manage a hierarchy tree of schedule entities.
+In the end a running Linux is likely going to manage a hierarchy tree of schedule entities.
 So [when a task](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L873) should be accounted for time, also the [parent](https://elixir.bootlin.com/linux/v5.17.10/source/kernel/sched/sched.h#L424) group should be, and so on, [until the root group is found](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/cpuacct.c#L342).
 
-Oh, the weight, yes.
+> Consider that the [`sched_entity`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L538) structure is the structure that tracks informations about the scheduling, like the [`vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L547), and it refers to tasks or tasks group structures. As they track scheduling data, they are per-CPU structures.
 
-### Runtime's weight
+And this comes to the weight.
+
+### The weight
 
 We said before that the weight implementation depends on the nature of the entity. If the entity is a task the weight is represented by the [niceness](https://www.kernel.org/doc/html/latest/scheduler/sched-nice-design.html) value ([code](https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L1861)).
-If it’s a task group, the weight is represented by the [shares](https://elixir.bootlin.com/linux/latest/source/kernel/sched/sched.h#L384) value (in cgroup v2 is directly named weight).
+If it’s a task group, the weight is represented by the CPU [shares](https://elixir.bootlin.com/linux/latest/source/kernel/sched/sched.h#L384) value.
+
+> In cgroup v2 the shares is named directly weight.
 
 In the end the weight is what matters: in the case of tasks the niceness is converted [to priority](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched/prio.h#L26) and then [to weight](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L10902) ([here](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L10750)). In the case of task groups the user-visible value is [internally converted](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L10718).
 
 For the sake of simplicity let’s remember this: the groups are hierarchical, and a task is part of a task group. The bigger the depth of the hierarchy, the more the weight gets diluted. Adding a heavily weighted task to one child group is not going to afflict the overall tasks tree the same as it would do if it was part of the root group.
 
-Each entity, whether a task or a task group, is treated the same. If is a group, the time accounting is applied to the entity and, [recursively](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/cpuacct.c#L342) through the hierarchy from [`update_curr()`](https://elixir.bootlin.com/linux/latest/source/kernel/sched/fair.c#L909).
+Each entity, whether a task or a task group, is treated the same. If is a group, the time accounting is applied [to the currently locally running entity](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4586) and [recursively through the hierarchy](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11158).
 
-The result is the so called [virtual runtime](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L547), which is a member of the scheduler entity [structure](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L538).
+### The update of the virtual runtime
 
-### The virtual runtime
-
-This value is updated on the schedule entity that is [currently running](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L846) on the local CPU via [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function, which is called:
+This virtual runtime is updated on the schedule entity that is [currently running](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L846) on the local CPU via [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function, which is called:
 - whenever a task [becomes runnable](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4272), or
 - whenever [blocks](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4371) becoming [unrannable](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L111), and
 - [periodically](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250) (every 1/[`CONFIG_HZ`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.hz#L51) seconds) by the [system timer interrupt handler](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/time/tick-common.c#L85).
 
-So, how this accounting is honoured in the task selection in the scheduler in order to guarantee fairness of execution?
+> As a detail, the virtual runtime value if the task is just forked, is initialised to a [minimum value](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L529) which depends on the runqueue load ([`cfs_rq->min_vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L540)).
+
+And this leads to the next question: how this accounting is honoured in the task selection in the scheduler in order to guarantee fairness of execution?
+
+---
 
 ## Task selection
 
 The schedule entities eligible to run (which are in a [runnable state](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L83)) are put in a run queue, which is implemented as a [red black self-balancing binary tree](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L532) that contains schedule entity structures ordered by `vruntime`.
 
-> As a detail, the virtual runtime value if the task is just forked, is initialised to a [minimum value](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L529) which depends on the runqueue load ([`cfs_rq->min_vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L540)).
+### The runqueues
 
-Runqueues are per-CPU structures and contain schedule entities ([here](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L556)), which could refer to tasks or task groups. The schedule entities they refer to are related to the local CPU, because the `sched_entity`s contain information about scheduling and thus are specific to a CPU.
+Runqueues are per-CPU structures and contain schedule entities ([here](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L556)), which could refer to tasks or task groups. The schedule entities they refer to are related to the local CPU, because the `sched_entity`s contain information about scheduling and thus are specific to a CPU. The `vruntime` is the binary tree key so the entity with the smallest `vruntime` is picked during a new schedule.
 
-In turn, also each task group has a dedicated [CFS runqueue](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L398), from the root task group through its child task groups.
+> Each scheduler class has its specific runqueue, which [are part](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L962) of the [general runqueues](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L926). Anyway, let's consider now only CFS runqueues.
+
+In turn, also each task group has a dedicated [CFS runqueue](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L398), from the root task group through its child task groups. [`__pick_next_entity()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L606) picks the entity with the smallest virtual runtime, whether is an actual task or a group. If it’s a task group the search is repeated on its runqueue and so on, going through the hierarchy of runqueues until a real task is found be run.
 
 Each runqueue keeps track of the schedule entities that are running/runnable on the local CPU.
 
@@ -123,30 +157,53 @@ Each runqueue keeps track of the schedule entities that are running/runnable on 
 
 - Tasks groups are global.
 - Tasks also are global.
-- Each task is part of a task group.
+- Every task is part of a task group.
 - There is one runqueue per task group per CPU.
 - Runqueues are composed by schedule entities.
 - Schedule entities reference task or task groups.
-- Schedule entities are one per CPU (`vruntime` is updated for the CPU-local).
+- Schedule entities are per CPU (e.g. `vruntime` is updated for the entity running on the local CPU).
 
-#### Example
+### Wrappin up the structures
 
-Below an example of two tasks (`p1` and `p2`), for which `p1` is direct child of task group `tg1` and `p2` is direct child of the root task group, where `i` is the `i`th CPU:
+To make it more clear, let's see a practical example.
+You can see below a diagram for a sample scenario where there are two tasks (`p1` and `p2`), and two task grups (root task group and `tg1` child of the root task group). And `p1` is direct child of task group `tg1` and `p2` is direct child of the root task group. `i` is the *i*-th CPU:
 ![Linux Scheduler entities relations](/images/linux_sched_structs.png)
+
+
+#### Global structures
+- `task_group.se`: `se[i]` is the task groups's `sched_entity` data for *i*-th CPU.
+- `task_group.cfs_rq`: `cfs_rq[i]` is the task group's `cfs_rq` data for *i*-th CPU.
+- `task_group.parent`: the parent task group.
+- `task_group.shares`: the task group `cpu.shares`
+- `task_struct.sched_class`: the scheduler class the tasks should be scheduled with.
+
+#### Per-CPU structures
+- `sched_entity.vruntime`: the virtual runtime.
+- `sched_entity.parent`: the schedule entity of the parent task group.
+- `sched_entity.my_q`: when not a task (`NULL`), the task group's CFS runqueue on the local CPU.
+- `sched_entity.run_node`: the related red-black tree node on the runqueue tree.
+- `sched_entity.cfs_rq`: the CFS runqueue that manages the schedule entity
+- `sched_entity.load`: the weight of the entity. If it relates to a task group, is the sum of the weights of the tasks of the group, on the local CPU.
+- `cfs_rq.load`: the load of the runqueue, aka the sum of the weights of the entities that compose it.
+- `cfs_rq.current`: the schedule entity that is currently running on the local CPU, where a group or a task.
+- `cfs_rq.rq`: the general CPU runqueue to which the CFS runqueue is attached.
+- `cfs_rq.tg`: the task group that owns the runqueue, whether the root one or a child.
+- `rq.cfs_tasks`: the [linked list](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/types.h#L178) containing the reb-black tree nodes (e.g. [here](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L7320) CFS puts the next entity into it).
 
 > If you would like to explore the relations between the entities, I recommend [this blog](https://mechpen.github.io/posts/2020-04-27-cfs-group/index.html#2.2.-data-structures).
 
 ### Weight for task groups
 
-As [task groups](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L391) can be run on multiple CPUs doing a real multitasking, the weight (shares) for task group's runqueue is further scaled by the ratio of the runqueue [load](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L533) to the global load of the task group.
+As [task groups](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L391) can be run on multiple CPUs doing a real multitasking, the weight (shares) for task group's runqueue is further scaled by the ratio of the [load](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L533) of the task group running on the local CPU (tg's runqueue) to the global load of the task group.
+
+> The shares [is further scaled](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L3215) if configured Linux for symmetrical multiprocessor, otherwise the shares [is not further scaled](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L3209).
 
 The load is the sum of the weights of the entities that compose the struct, whether is the task groups' runqueue or the whole task group.
 This ratio tells us how much the task group is loaded on the local CPU.
 
-The calculcation is done by the [`calc_group_shares()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L10750) function, to get the final value of the task goup's shares that will weight the task group schedule entity's virtual runtime:
+The calculcation is done by the [`calc_group_shares()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L3157) function, to get the final value of the task goup's shares that will weight the virtual runtime of the task group schedule entity:
 
 ```
-
 static long calc_group_shares(struct cfs_rq *cfs_rq)
 {
 	long tg_weight, tg_shares, load, shares;
@@ -166,8 +223,6 @@ static long calc_group_shares(struct cfs_rq *cfs_rq)
 
 	/*
 	   tg_weight is the global load of the task group.
-	   In fact, it needs synchronization among CPU
-	   (see atomic_long_read()).
 	 */
 	tg_weight = atomic_long_read(&tg->load_avg);
 
@@ -188,17 +243,25 @@ static long calc_group_shares(struct cfs_rq *cfs_rq)
 }
 ```
 
-> As a detail, the task group schedule entities are per-CPU structures, and they represent a task group on the local CPU. Instead, runqueues represent per-CPU structures. I.e. `tg->load_avg` is atomic, `tg->shares` replicated.
+And this means:
 
-This is done to treat fairly entities of a group, and recursively through groups and tasks at all levels of the hierarchy!
+```
+shares = shares * (runqueue's load / task group's load)
+```
+
+This is done to treat fairly also groups among CPUs!
 
 Consequently, the `vruntime` is the binary tree key so the entity with the smallest `vruntime` is picked by [`__pick_next_entity()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L606), whether is an actual task or a group. If it’s a task group the search is repeated on its runqueue and so on, going through the hierarchy of runqueues until a real task is found be run.
 
-As a detail, in order to provide efficiency and to not need to [traverse](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L606) the whole tree every time a scheduling is needed, as the element in an ordered red black tree that is leftmost is the element with minor key value (i.e. the `vruntime`) a cache is easily keeped as [`rb_leftmost`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree_types.h#L28) variable in each runqueue structure.
+> As a detail, in order to provide efficiency and to not need to [traverse](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L606) the whole tree every time a scheduling is needed, as the element in an ordered red black tree that is leftmost is the element with minor key value (i.e. the `vruntime`) a cache [is easily keeped](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L588) as [`rb_leftmost`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree_types.h#L28) variable in each runqueue structure.
 
-But, how a runqueue is populated? When a new task is added do a runqueue?
-- when a [`clone()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/fork.c#L2524) is called, and
-- when a task wakes up after having slept via [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) function call
+So, the next question is: how a runqueue is populated? When a new task is added do a runqueue?
+
+### Runqueues population
+
+The runqueues are populated when:
+- a [`clone()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/fork.c#L2524) is called, and
+- a task wakes up after having slept via [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) function call
 
 with [`enqueue_entity()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4260).
 
@@ -212,9 +275,9 @@ In both enqueue and dequeue cases the `rb_leftmost` cache is [`updated`](https:/
 
 Now that we have a runqueue populated, how the scheduler picks one task from there?
 
-## Scheduler entrypoint
+### Scheduler entrypoint
 
-[`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through `__schedule`) calls [`__pick_next_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5604) which picks the [highest priority scheduler class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5818) which returns the [highest priority entity](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree.h#L284) of the run queue, through the hierarchy until a real task is found and returned.
+[`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through [`__schedule`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)) calls [`__pick_next_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5604) which picks the [highest priority scheduler class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5818) which returns the [highest priority entity](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree.h#L284) of the run queue (which is, the task that ran less), through the hierarchy until a real task is found and returned.
 
 It loops [while](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6386) the currently running task should be rescheduled, which is, is no longer fair to be run.
 

@@ -277,11 +277,15 @@ Now that we have a runqueue populated, how the scheduler picks one task from the
 
 ### Scheduler entrypoint
 
-[`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through [`__schedule`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)) calls [`__pick_next_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5604) which picks the [highest priority scheduler class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5818) which returns the [highest priority entity](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree.h#L284) of the run queue (which is, the task that ran less), through the hierarchy until a real task is found and returned.
+[`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through [`__schedule`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)), calls [`pick_next_task`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5681) that will return the task that ran less.
+
+For the sake of simplicity, let's consider that the [hyperthreading support](https://lwn.net/Articles/861251/) is not [configured]() (more on core scheduling [here](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html)). 
+
+ [`__pick_next_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5604) picks the [highest priority scheduler class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5615) which returns the [higher priority task](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L7213), by looping through the hierarchy of task groups' runqueues, [until](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L7269) a real task is found. Actually, as we said before, the runqueue red-black trees are not traversed on each schedule, instead it picks in the end the [`rb_leftmost`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree.h#L106) entity rb node, through [`__pick_next_entity`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4528).
 
 It loops [while](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6386) the currently running task should be rescheduled, which is, is no longer fair to be run.
 
-> As a side note, actually the path is a bit [different](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5692) when the [core scheduling](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html) feature is enabled.
+> The path is a bit [different](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5695) when the [core scheduling](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html) feature is enabled.
 
 Then, [`__schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)  calls [`context_switch()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L4945) that switches to the returned task.
 

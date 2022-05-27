@@ -414,11 +414,11 @@ A note deserves to be explained. The kernel is fully [preemptive](https://elixir
 When preemption can’t be done, locks are in place to mark it, so that a safe state is defined when the kernel doesn’t hold a lock.
 Basically a lock counter `preempt_count` is added to [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) to let preempt tasks running in kernelspace only when it’s equal to zero.
 
-Upon return from interrupt [x86_64](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/entry/entry_64.S#L380) to kernelspace or from process context during [preemption](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6493), if `need_resched` is set and [`preempt_count` == 0](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/preempt.h#L215) the current task is preempted, otherwise the interrupt returns to the interrupted task.
+Upon return from interrupt to kernelspace or from process context during [preemption](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6493), if `need_resched` is set and [`preempt_count` == 0](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/preempt.h#L215) the current task is preempted, otherwise the interrupt returns to the interrupted task.
 
 Also, everytime `preempt_count` is updated and decreased to zero and [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) is true, preemption is done.
 
-For example, the xtensa's ISA [common exception exit path](https://elixir.bootlin.com/linux/v5.17.9/source/arch/xtensa/kernel/entry.S#L488) is pretty self-explanatory:
+For example, considering the return path from interrupt which is architecture-dependent, the xtensa's ISA [common exception exit path](https://elixir.bootlin.com/linux/v5.17.9/source/arch/xtensa/kernel/entry.S#L488) is pretty self-explanatory:
 
 ```
 common_exception_return:
@@ -452,9 +452,9 @@ That’s all folks! We've arrived to the end of this little journey.
 
 ## Wrapping up
 
-I didn't want to interrupt the trip but instead leave to you the choice to dig into each single path the kernel does to manage the tasks scheduling. That's why I intentionally didn't include so much snippets, as the code is there and open for you, whenever you want.
-
 > The linked code refers to Linux 5.17.9.
+
+I didn't want to interrupt the trip but instead leave to you the choice to dig into each single path the kernel does to manage the tasks scheduling. That's why I intentionally didn't include so much snippets, as the code is there and open for you, whenever you want.
 
 What is incredible is that, even if it's one of the largest OSS projects, you can understand how Linux works and also contribute. That's why I love open source more every time!
 

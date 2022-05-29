@@ -7,7 +7,7 @@ draft: false
 ---
 
 Two years ago more or less I started my journey in Linux. I was scared at first and I didn't know where to start from.
-But then I decided to start from a [book](https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468) in order to follow a path.
+But then I decided to buy a [book](https://www.amazon.com/Linux-Kernel-Development-Robert-Love/dp/0672329468) - and what a book! - in order to follow a path.
 
 Along the way I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org) and [source code](https://elixir.bootlin.com/linux/v5.17.9/source). In the meantime I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
 
@@ -27,14 +27,33 @@ So here I am with with a blog.
 
 ### Table of contents
 
-#### 1. Introduction
-#### 2. Time accounting
-#### 3. Tasks selection
-#### 4. Sleep and wake up
-#### 5. Context switch and preemption
+1. [Introduction](#1-resource-sharing-is-the-key)
+2. [Time accounting](#2-time-accounting)
+    1. [The runtime](#the-runtime)
+    2. [The virtual runtime](#the-virtual-runtime)
+    3. [The schedule entities](#the-schedule-entities)
+    4. [The weight](#the-weight)
+    5. [Update of the virtual runtime](#update-of-the-virtual-runtime)
+3. [Tasks selection](#3-tasks-selection)
+    1. [The runqueues](#the-runqueues)
+    2. [Wrapping up the structures](#wrapping-up-the-structures)
+    3. [Weight for task groups](#weight-for-task-groups)
+    4. [Wrapping up the time accounting](#wrapping-up-the-time-accounting)
+    5. [Runqueues population](#runqueues-population)
+    6. [The scheduler entrypoint](#the-scheduler-entrypoint)
+4. [Sleep and wake up](#4-sleep-and-wake-up)
+    1. [Sleep](#sleep)
+    2. [Wake up](#wake-up)
+        1. [Signals](#signals)
+5. [Context switch and preemption](#5-context-switch-and-preemption)
+    1. [Voluntarily](#voluntarily)
+    2. [Nonvoluntary aka preemption](#nonvoluntarily-aka-preemption)
+        1. [User space](#user-space)
+        2. [Kernel space](#kernel-space)
+6. [Wrapping up](#wrapping-up)
 ---
 
-## 0. Resource sharing is the key!
+## 1. Resource sharing is the key!
 
 Let’s dive into the Linux component which is responsible of doing such great work: the scheduler.
 
@@ -54,7 +73,7 @@ Based on that, time accounting is what guarantees fairness in Linux CFS schedule
 
 ---
 
-## 1. Time accounting
+## 2. Time accounting
 
 This comes to the time accounting, so let's start to dig into it! 
 
@@ -120,7 +139,7 @@ That’s the case of [cgroups](https://elixir.bootlin.com/linux/v5.17.9/source/k
 
 Also, task groups can be composed of other groups, and there is a root group.
 In the end a running Linux is likely going to manage a hierarchy tree of schedule entities.
-So [when a task](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L873) should be accounted for time, also the [parent](https://elixir.bootlin.com/linux/v5.17.10/source/kernel/sched/sched.h#L424) group should be, and so on, [until the root group is found](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/cpuacct.c#L342).
+So when a task should be [accounted for time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11153), also the [parent group's entity](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11158) should be, and so on, [until the root group'entity](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L282) is found.
 
 > Consider that the [`sched_entity`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L538) structure is the structure that tracks informations about the scheduling, like the [`vruntime`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L547), and it refers to tasks or tasks group structures. As they track scheduling data, they are per-CPU structures.
 
@@ -139,7 +158,7 @@ For the sake of simplicity let’s remember this: the groups are hierarchical, a
 
 Each entity, whether a task or a task group, is treated the same. If is a group, the time accounting is applied [to the currently locally running entity](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4586) and [recursively up through the hierarchy](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11158).
 
-### The update of the virtual runtime
+### Update of the virtual runtime
 
 This virtual runtime is updated on the schedule entity that is [currently running](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L846) on the local CPU via [`update_curr()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L844) function, which is called:
 - whenever a task [becomes runnable](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4272), or
@@ -152,7 +171,7 @@ And this leads to the next question: how this accounting is honoured in the task
 
 ---
 
-## 2. Task selection
+## 3. Task selection
 
 The schedule entities eligible to run (which are in a [runnable state](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L83)) are put in a run queue, which is implemented as a [red black self-balancing binary tree](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L532) that contains schedule entity structures ordered by `vruntime`.
 
@@ -275,7 +294,9 @@ Consequently, the `vruntime` is the binary tree key so the entity with the small
 
 And now we need to see the whole picture, and better, with code!
 
-### The whole picture
+### Wrapping up the time accounting!
+
+Now that we have the most important notions of the time accounting, considering how the weight is calculated for both tasks and tasks groups schedule entities, which are part of hierarchical tasks groups' runqueues, let's see how the time accounting is honoured during the periodic tick, fired by the timer interrupt:
 
 ```
 /*
@@ -328,9 +349,9 @@ scheduler_tick()
                -> reweight_entity(cfs_rq_of(se), se, shares);
 ```
 
-So, the next question is: how a runqueue is populated? When a new task is added do a runqueue?
+> The code has been a bit simplified to show a clearer picture.
 
----
+So, the next question is: how a runqueue is populated? When a new task is added do a runqueue?
 
 ### Runqueues population
 
@@ -350,7 +371,7 @@ In both enqueue and dequeue cases the `rb_leftmost` cache is [`updated`](https:/
 
 Now that we have a runqueue populated, how the scheduler picks one task from there?
 
-### Runqueues consumption: scheduler entrypoint
+### The scheduler entrypoint
 
 [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through [`__schedule`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)), calls [`pick_next_task`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5681) that will return the task that ran less.
 
@@ -372,7 +393,7 @@ For example tasks waiting for events (like for keyboard input or for file I/O) c
 
 ---
 
-## 3. Sleep and wake up
+## 4. Sleep and wake up
 
 A task can decide to sleep but something then is needed to wake it up. We should also consider that multiple tasks can wait for some event to occur.
 
@@ -444,7 +465,7 @@ As a detail, wake up can be provoked in both process context and interrupt conte
 
 ---
 
-## 4. Context switch and Preemption
+## 5. Context switch and Preemption
 
 And this comes to the context switch.
 For example, when a task starts to sleep a context switch is needed, and the next task is voluntarily picked and the scheduling is done via [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377).
@@ -469,8 +490,8 @@ As the main Linux scheduler class is a fair scheduler the fairness must be guara
 For this purpose a flag named [`need_reschedule`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L83) is present in the [`task_struct`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L734)'s [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) and is set or unset on the current task to notify that it should leave the CPU which in turn, after [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) call, will switch to another process context.
 
 So, when this flag is set?
-- in [`scheduler_tick()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250), which is constantly called by the timer interrupt [handler](https://elixir.bootlin.com/linux/v2.6.39/source/kernel/time/tick-common.c#L63) (the architecture independent part actually), continuously checking (and updating) `vruntime` and it sets the flag when a preemption is needed.
-- in [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985), when the current task has minor priority than the awakened.
+- in [`scheduler_tick()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250), which is constantly called by the timer interrupt [handler](https://elixir.bootlin.com/linux/v2.6.39/source/kernel/time/tick-common.c#L63) (the architecture independent part actually), continuously checking and updating `vruntime` and it [sets the flag](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4600) when a preemption is needed.
+- in [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985), when the current task [has minor priority](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3562) than the awakened.
 
 Then, in order to understand when the flag is checked we can think about when a task preemption is needed and also can be done safely.
 
@@ -518,6 +539,8 @@ common_exception_return:
 	...
 ```
 
+> TL;DR About what we said above, you can check the `__schedule()` function [comments](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6151).
+
 Also, the kernel is [SMP-safe](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/Kconfig#L312) that is, a task can be safely restored in a symmetrical multi processor.
 
 You can check both [preemption config](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L51) and [SMP config (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/Kconfig#L400) it your running kernel version:
@@ -552,3 +575,4 @@ I hope this was interesting for you as it was for me. Please, feel free to reach
 - https://josefbacik.github.io/kernel/scheduler/2017/07/14/scheduler-basics.html
 - https://opensource.com/article/19/2/fair-scheduling-linux
 - https://lwn.net/Articles/531853/
+- https://oska874.gitbooks.io/process-scheduling-in-linux/content/

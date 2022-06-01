@@ -1,6 +1,6 @@
 ---
 title: "A journey into the Linux scheduler"
-date: 2022-05-02T18:36:15+02:00
+date: 2022-06-01T09:00:00+02:00
 tags: [linux, scheduler]
 categories: [linux]
 draft: false
@@ -23,7 +23,7 @@ $ perf stat -e sched:sched_switch --timeout 1000
 
 During this journey inside Linux, I've written notes as it helps me to digest and re-process in my own way the informations I learn. Then I though: "Maybe they're useful to someone. Why not sharing them?”.
 
-So here I am with with a blog.
+So here I am with with a blog:
 
 ### Table of contents
 
@@ -46,7 +46,7 @@ So here I am with with a blog.
     2. [Wake up](#wake-up)
         1. [Signals](#signals)
 5. [Context switch and preemption](#5-context-switch-and-preemption)
-    1. [Voluntarily](#voluntarily)
+    1. [Voluntary](#voluntary)
     2. [Nonvoluntary: preemption](#nonvoluntary-preemption)
         1. [User space](#user-space)
         2. [Kernel space](#kernel-space)
@@ -305,11 +305,11 @@ Consequently, the `vruntime` is the binary tree key so the entity with the small
 
 > As a detail, in order to provide efficiency and to not need to [traverse](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L606) the whole tree every time a scheduling is needed, as the element in an ordered red black tree that is leftmost is the element with minor key value (i.e. the `vruntime`) a cache [is easily keeped](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L588) as [`rb_leftmost`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree_types.h#L28) variable in each runqueue structure. And it's [ideally picked](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4518) by `pick_next_entity()`.
 
-And now we need to see the whole picture, and better, with code!
+Finally, we can better see the whole picture!
 
-### Wrapping up the time accounting!
+### Wrapping up the time accounting
 
-Now that we have the most important notions of the time accounting, considering how the weight is calculated for both tasks and tasks groups schedule entities, which are part of hierarchical tasks groups' runqueues, let's see how the time accounting is honoured during the periodic tick, fired by the timer interrupt:
+Now that we have the most important concepts in mind, of the time accounting, considering how the weight is calculated for both tasks and tasks groups schedule entities, which are part of hierarchical tasks groups' runqueues, let's see how the time accounting is honoured during the periodic tick, fired by the timer interrupt:
 
 ```
 /*
@@ -370,12 +370,12 @@ So, the next question is: how a runqueue is populated? When a new task is added 
 
 The runqueues are populated when:
 - a [`clone()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/fork.c#L2524) is called, and
-- a task wakes up after having slept via [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) function call
+- a task wakes up after having slept, via [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) function call
 
 with [`enqueue_entity()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4260).
 
-Furthermore, the next question is: when a task is removed from the runqueue?
-- When a task explicitly [`exit()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/exit.c#L733)s (via [`exit()`](https://man7.org/linux/man-pages/man3/exit.3.html) libc function)
+And the next question is: when a task is removed from the runqueue?
+- When a task explicitly [`exit()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/exit.c#L733)s (e.g. via [`exit()`](https://man7.org/linux/man-pages/man3/exit.3.html) libc function)
 - When a task explicitly or implicitly requests to [`sleep()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L261)
 
 with [`dequeue_entity()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4366).
@@ -388,19 +388,21 @@ Now that we have a runqueue populated, how the scheduler picks one task from the
 
 [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) is the main function which (through [`__schedule`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)), calls [`pick_next_task`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5681) that will return the task that ran less.
 
-For the sake of simplicity, let's consider that the [hyperthreading support](https://lwn.net/Articles/861251/) is not [configured]() (more on core scheduling [here](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html)). 
+For the sake of simplicity, let's assume that the [hyperthreading support](https://lwn.net/Articles/861251/) is not [configured](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L117).
+
+> More on core scheduling [here](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html). 
 
  [`__pick_next_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5604) picks the [highest priority scheduler class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5615) which returns the [higher priority task](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L7213), by looping through the hierarchy of task groups' runqueues, [until](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L7269) a real task is found. Actually, as we said before, the runqueue red-black trees are not traversed on each schedule, instead it picks in the end the [`rb_leftmost`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/rbtree.h#L106) entity rb node, through [`__pick_next_entity`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4528).
 
-It loops [while](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6386) the currently running task should be rescheduled, which is, is no longer fair to be run.
+`schedule()` loops [while](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6386) the currently running task should be rescheduled, which is, is no longer fair to be run.
 
 > The path is a bit [different](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5695) when the [core scheduling](https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html) feature is enabled.
 
 Then, [`__schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6189)  calls [`context_switch()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L4945) that switches to the returned task.
 
-And this comes to one of the next topics: **context switch**. But before talking about that let’s continue talking about the life of a task.
+And this comes to one of the next topics: context switch. But before talking about that let’s continue talking about the life of a task.
 
-Let’s imagine that we are in process context ([TL;DR](https://stackoverflow.com/questions/57987140/difference-between-interrupt-context-and-process-context)) and that our task is now running.
+Let’s imagine that we are in process context and that our task is now running.
 Not all tasks complete from the time have being scheduled.
 For example tasks waiting for events (like for keyboard input or for file I/O) can be put to sleep, and also are in [interruptible](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L84) / [uninterruptible](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L85) state so that aren’t picked from the runqueue.
 
@@ -410,12 +412,12 @@ For example tasks waiting for events (like for keyboard input or for file I/O) c
 
 A task can decide to sleep but something then is needed to wake it up. We should also consider that multiple tasks can wait for some event to occur.
 
-A wait queue (of type [`wait_queue_head`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/wait.h#L37) is implemented for this purpose as a list of tasks waiting for some events to occur.
+A wait queue of type [`wait_queue_head`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/wait.h#L37) is implemented for this purpose as a doubly linked list of tasks waiting for some events to occur.
 It allows tasks to be notified when those events occur by referencing the wait queue, generally from what generates the event itself.
 
 ### Sleep
 
-A task can put itself to sleep in the kernel similar with what does the [`wait`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L18) syscall:
+A task can put itself to sleep in the kernel similar to what does the [`wait`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L18) syscall:
 - create a wait queue via the [`DECLARE_WAIT_QUEUE_HEAD()`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/wait.h#L61) macro
 - add the task itself to it via [`add_wait_queue()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L18) function call
 - set its state to [interruptible](https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L84) / [uninterruptible](https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L85) via [`prepare_to_wait()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L261). If task is set interruptible signals can wakes it up.
@@ -435,20 +437,20 @@ while (!condition) { /* condition is the event that we are waiting for */
 
 It can also do it nonvoluntarily waiting for [semaphores](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/semaphore.h#L15).
 
-### Wake up
-
-Instead, to wake those tasks that are sleeping waiting for an event here is the flow.
-
 > As a detail, wait queues have two implementations, the one we mentioned above and the original one (Linux 2.0) which has been kept for simple use cases, and is called now [simple wait queues](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/swait.h#L48) (more on the history [here](https://lwn.net/Articles/577370/)).
 
+### Wake up
+
 For the sake of simplicity on the path to waking up let’s take the example of the simple wait queue, as the standard wait queue here is more complex than it is in the preparation to wait, and we don't need to understand it now.
+
+To wake those tasks that are sleeping waiting for an event here is the flow:
 
 [`swake_up_all()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/swait.c#L62) (which is pretty analogous to the sibling implementation's [` wake_up_all()`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/wait.h#L224)) calls [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) and is there to wake all processes in a wait queue when the associated event occurs.
 
 [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985) does the work that consists of:
 - [set task state](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L4083) to [running](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L83) - and through [`ttwu_queue`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3801):
 - [calls](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3615) the [`activate_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L2034) function which adds the task to the runqueue via [`enqueue_task()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L2000)
-- [sets `need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L2125) flag on current task if the awakened task has higher priority than the current one (we’ll talk about this flag later) which provokes a [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L996) (and consequent context switch)
+- [sets `need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L2125) flag on current task if the awakened task has higher priority than the current one (we’ll talk about this flag later) which provokes then a [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L996) (and consequent context switch)
 
 [`swake_up_all()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/swait.c#L62) then [removes](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/swait.c#L73) the task from the wait queue.
 
@@ -457,7 +459,7 @@ For the sake of simplicity on the path to waking up let’s take the example of 
 Also signals can wake up tasks if they are in [interruptible](https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L84).
 In this case the task code itself should then manage the spurious wake up ([example](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L435)), by checking the event that occurs or [manage the signal](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched/signal.h#L363) (e.g. [`inotify`](https://elixir.bootlin.com/linux/v5.17.9/source/fs/notify/inotify/inotify_user.c#L235) does it), and call [`finish_wait`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/wait.c#L388) to update its state and remove itself from the wait queue.
 
-Completing the sample code above by managing also the waking up part we'll have something like this:
+Completing the sample code above by managing also the waking up part it will end up with something like this:
 
 ```
 /* ‘q’ is the wait queue we wish to sleep on */
@@ -474,7 +476,7 @@ finish_wait(&q, &wait);
 ```
 
 
-As a detail, wake up can be provoked in both process context and interrupt context, during an interrupt handler execution. Sleep can be only done in process context.
+As a detail, wake up can be provoked in both process context and interrupt context, during an interrupt handler execution, which is what often device drivers do. Sleep can be only done in process context.
 
 ---
 
@@ -490,7 +492,7 @@ The context switch work is done by [`context_switch()`](https://elixir.bootlin.c
 As you saw, both functions are architecture dependent (ASM) code.
 The context switch is requested by the tasks themselves voluntarily or by the scheduler, nonvoluntarily from the point of view of a task.
 
-### Voluntarily
+### Voluntary
 
 As we saw tasks can trigger context switch via [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) in kernelspace, either when they explicitely request it or when they put themselves to sleep or they try to wake up other ones. Also, context switch happens when tasks block, for example when synchronizing with [semaphores](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/semaphore.h#L15) or [mutexes](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/mutex.h#L63).
 
@@ -500,17 +502,17 @@ Anyway context switches are not done only when code in kernelspace voluntarily c
 
 As the main Linux scheduler class is a fair scheduler the fairness must be guaranteed in some way... Ok, but how it preempts?
 
-For this purpose a flag named [`need_reschedule`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L83) is present in the [`task_struct`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L734)'s [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) and is set or unset on the current task to notify that it should leave the CPU which in turn, after [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) call, will switch to another process context.
+For this purpose a flag named [`need_reschedule`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L83) is present in the [`task_struct`](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/sched.h#L734)'s [`thread_info` flags (i.e. x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) and is set or unset on the current task to notify that it should leave the CPU which in turn, after [`schedule()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6377) call, will switch to another process context.
 
 So, when this flag is set?
-- in [`scheduler_tick()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250), which is constantly called by the timer interrupt [handler](https://elixir.bootlin.com/linux/v2.6.39/source/kernel/time/tick-common.c#L63) (the architecture independent part actually), continuously checking and updating `vruntime` and it [sets the flag](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4600) when a preemption is needed.
+- in [`scheduler_tick()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L5250), which is constantly called by the timer interrupt [handler](https://elixir.bootlin.com/linux/v2.6.39/source/kernel/time/tick-common.c#L63) (the architecture independent part actually), continuously checking and updating `vruntime`, balancing the runqueues, it [sets the flag](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L4600) when a preemption is needed.
 - in [`try_to_wake_up()`](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3985), when the current task [has minor priority](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L3562) than the awakened.
 
 Then, in order to understand when the flag is checked we can think about when a task preemption is needed and also can be done safely.
 
 ##### In userspace
 
-Returning [from kernelspace to userspace](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L301) is safe to context switch: if it is safe to continue executing the
+Returning [from kernelspace to userspace](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L301) is safe to context switch: if it is safe to switch mode and continue executing the
 current task, it is also safe to pick a new task to execute. Has this userspace task still to run? Maybe it’s no longer fair to run it. This is what happens when from:
 - [system calls](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L336)
 - [interrupt handlers](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/entry-common.h#L380)
@@ -525,13 +527,13 @@ return to userspace.
 
 A note deserves to be explained. The kernel is fully [preemptive](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L51) from [2.6](https://elixir.bootlin.com/linux/v2.6.0/source/arch/x86_64/Kconfig#L189) that is, a task can be preempted as long as the kernel is in a safe state.
 When preemption can’t be done, locks are in place to mark it, so that a safe state is defined when the kernel doesn’t hold a lock.
-Basically a lock counter `preempt_count` is added to [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) to let preempt tasks running in kernelspace only when it’s equal to zero.
+Basically a lock counter [`preempt_count`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L30) is added to [`thread_info` flags (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/include/asm/thread_info.h#L57) to let preempt tasks running in kernelspace only when it’s equal to zero.
 
-Upon return from interrupt to kernelspace or from process context during [preemption](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6493), if `need_resched` is set and [`preempt_count` == 0](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/preempt.h#L215) the current task is preempted, otherwise the interrupt returns to the interrupted task.
+Upon return from interrupt to kernelspace or from process context during [preemption](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6493), [if `need_resched` is set](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6485) and [`preempt_count` == 0](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6501) the current task is preempted, otherwise the interrupt returns to the interrupted task.
 
-Also, everytime `preempt_count` is updated and decreased to zero and [`need_resched`](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/include/asm/thread_info.h#L33) is true, preemption is done.
+Also, everytime `preempt_count` is [updated and decreased to zero and `need_resched` is true](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/preempt.h#L221), [preemption is done](https://elixir.bootlin.com/linux/v5.17.9/source/include/linux/preempt.h#L222).
 
-For example, considering the return path from interrupt which is architecture-dependent, the xtensa's ISA [common exception exit path](https://elixir.bootlin.com/linux/v5.17.9/source/arch/xtensa/kernel/entry.S#L488) is pretty self-explanatory:
+For example, considering the return path from interrupt which is architecture-dependent, the *xtensa* ISA's common [exception exit path](https://elixir.bootlin.com/linux/v5.17.9/source/arch/xtensa/kernel/entry.S#L488) is pretty self-explanatory:
 
 ```
 common_exception_return:
@@ -554,26 +556,33 @@ common_exception_return:
 
 > TL;DR About what we said above, you can check the `__schedule()` function [comments](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/core.c#L6151).
 
-Also, the kernel is [SMP-safe](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/Kconfig#L312) that is, a task can be safely restored in a symmetrical multi processor.
+Moreover, the kernel is [SMP-safe](https://elixir.bootlin.com/linux/v5.17.9/source/arch/arm64/Kconfig#L312) that is, a task can be safely restored in a symmetrical multi processor.
 
-You can check both [preemption config](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L51) and [SMP config (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/Kconfig#L400) it your running kernel version:
+You can check both [preemption config](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/Kconfig.preempt#L51) and [SMP config (x86)](https://elixir.bootlin.com/linux/v5.17.9/source/arch/x86/Kconfig#L400) in your running kernel version from procfs:
 
 ```
-$ uname -v
-#1 SMP PREEMPT Wed, 27 Apr 2022 20:56:11 +0000
+$ zcat /proc/config.gz | grep "CONFIG_SMP\|CONFIG_PREEMPT" | grep -v "^#"
+CONFIG_PREEMPT_BUILD=y
+CONFIG_PREEMPT=y
+CONFIG_PREEMPT_COUNT=y
+CONFIG_PREEMPTION=y
+CONFIG_PREEMPT_DYNAMIC=y
+CONFIG_PREEMPT_RCU=y
+CONFIG_SMP=y
+CONFIG_PREEMPT_NOTIFIERS=y
 ```
 
 That’s all folks! We've arrived to the end of this little journey.
 
 ---
 
-## Wrapping up
+## Conclusion
 
 > The linked code refers to Linux 5.17.9.
 
-I didn't want to interrupt the trip but instead leave to you the choice to dig into each single path the kernel does to manage the tasks scheduling. That's why I intentionally didn't include so much snippets, as the code is there and open for you, whenever you want.
+I liked the idea to leave you the choice to dig into each single path the kernel does to manage the tasks scheduling. That's why I intentionally didn't include so much snippets, instead to provide you the code face of the coin for almost each path we saw, through links to the real Linux code.
 
-What is incredible is that, even if it's one of the largest OSS projects, you can understand how Linux works and also contribute. That's why I love open source more every time!
+What is incredible is that, even if it's one of the largest OSS projects, you can understand how Linux works and also contribute. That's why I love open source more every day!
 
 # Thank you!
 

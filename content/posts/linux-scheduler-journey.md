@@ -55,7 +55,7 @@ So here I am with with a blog:
 
 ## 1. Resource sharing is the key!
 
-Let’s dive into the Linux component which is responsible of doing such great work: the scheduler.
+Let’s dive into the Linux component which is responsible for doing such great work: the scheduler.
 
 In order to do it imagine what we would expect from an operating system. Let's say that we’d want it to run tasks that we need to complete, providing the OS hardware resources.
 Tasks come of different natures but we can simply categorise them as CPU intensive and interactive ones.

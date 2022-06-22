@@ -21,7 +21,7 @@ $ perf stat -e sched:sched_switch --timeout 1000
        1.001137885 seconds time elapsed
 ```
 
-During this journey inside Linux, I've written notes as it helps me to digest and re-process in my own way the informations I learn. Then I though: "Maybe they're useful to someone. Why not sharing them?”.
+During this journey inside Linux, I've written notes as it helps me to digest and re-process in my own way the informations I learn. Then I thought: "Maybe they're useful to someone. Why not share them?”.
 
 So here I am with with a blog:
 

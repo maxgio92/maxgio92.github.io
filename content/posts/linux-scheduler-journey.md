@@ -12,7 +12,7 @@ But then I decided to buy a [book](https://www.amazon.com/Linux-Kernel-Developme
 Along the way, I integrated the material with up-to-date documentation from [kernel.org](https://docs.kernel.org) and [source code](https://elixir.bootlin.com/linux/v5.17.9/source). In the meantime, I started to learn C a bit so that I also could have [played](https://github.com/maxgio92/linux/tree/syscall/maxgio) with what I was learning, step by step.
 
 One of the things I was fascinated by was how Linux is able to manage and let the CPU run thousands and thousands of processes each second.
-To give you an idea, just now Linux on my laptop configured with an Intel i7-1185G7 CPU within only one second did 28,428 context switches! That’s fantastic, isn’t it?
+To give you an idea, right now, Linux on my laptop configured with an Intel i7-1185G7 CPU switched contest 28,428 times in a second! That’s fantastic, isn’t it?
 
 ```shell
 $ perf stat -e sched:sched_switch --timeout 1000

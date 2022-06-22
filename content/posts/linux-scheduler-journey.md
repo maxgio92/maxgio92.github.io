@@ -64,7 +64,7 @@ Something should provide the efficiency of tasks completion and responsiveness. 
 So, in a few words, I would like to request to the scheduler: “I want to execute this task and I want it’s completed when I need or to respond when I need”.
 The goal of a scheduler is to decide “what runs next” leading to have the best balance between the needings of the different natures of the tasks.
 
-As Linux is a *preemptive multitasking* operating system, the completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity saw an improvement from O(1) to O(log N).
+As Linux is a *preemptive multitasking* operating system, the completely fair scheduler (CFS) came to Linux, as the replacement of the O(1) scheduler from the 2.6.23, with the aim to guarantee the fairness of CPU owning by the tasks, and at the same time tailoring to a broad nature range of tasks. The algorithm complexity saw an improvement from O(1) to O(log N).
 
 As a side note consider that the Linux scheduler is made of different [scheduler classes](https://www.kernel.org/doc/html/v5.17/scheduler/sched-design-CFS.html#scheduling-classes) ([code](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/sched.h#L2117)), of which the [CFS class](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/fair.c#L11737) is the highest-priority one. Another one is the [real time](https://elixir.bootlin.com/linux/v5.17.9/source/kernel/sched/rt.c#L2642) scheduler class, tailored as the name suggests for tasks that need responsiveness.
 

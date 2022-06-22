@@ -57,7 +57,7 @@ So here I am with with a blog:
 
 Let’s dive into the Linux component which is responsible for doing such great work: the scheduler.
 
-In order to do it imagine what we would expect from an operating system. Let's say that we’d want it to run tasks that we need to complete, providing the OS hardware resources.
+In order to do it, imagine what we would expect from an operating system. Let's say that we’d want it to run tasks that we need to complete, providing the OS hardware resources.
 Tasks come of different natures but we can simply categorise them as CPU intensive and interactive ones.
 
 Something should provide the efficiency of tasks completion and responsiveness. Consider a typewriter that prints letters with 1s second of delay, it would be impossible to use!

@@ -1,12 +1,79 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>kubernetes on Maxgio's blog</title><link>http://maxgio92.github.io/categories/kubernetes/</link><description>Recent content in kubernetes on Maxgio's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 05 Jul 2021 14:05:00 +0200</lastBuildDate><atom:link href="http://maxgio92.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>STRIDE threat modeling on Kubernetes pt.6/6: Elevation of privilege</title><link>http://maxgio92.github.io/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</link><pubDate>Mon, 05 Jul 2021 14:05:00 +0200</pubDate><guid>http://maxgio92.github.io/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</guid><description>Hello everyone, a long time has passed after the 5th part of this journey through STRIDE thread modeling in Kubernetes has been published. If you recall well, STRIDE is a model of threats for identifying security threats, by providing a mnemonic for security threats in six categories:
-Spoofing Tampering Repudiation Information disclosure Denial of service Elevation of privilege In this last chapter we&amp;rsquo;ll talk about elevation of privilege. Well, this category can be very wide, but let&amp;rsquo;s start thinking about what it can comprises and what we can do against this category of threats.</description></item><item><title>STRIDE threat modeling on Kubernetes pt.5/6: Denial of service</title><link>http://maxgio92.github.io/posts/k8s-stride-05-denial-of-service/</link><pubDate>Mon, 07 Sep 2020 18:36:15 +0200</pubDate><guid>http://maxgio92.github.io/posts/k8s-stride-05-denial-of-service/</guid><description>I&amp;rsquo;m back after a long time with the fifth episode of this mini-series about STRIDE threat modeling in Kubernetes. In the previous one we talked about Information disclosure. This part is about the D that stands for Denial Of Service.
-DOS is the attempt to making a resource unavailable. For instance, a Kubernetes dashboard is left exposed on the Internet, allowing anyone to deploy containers on your company&amp;rsquo;s infrastructure to mine cryptocurrency and starve your legitimate applications of CPU (really happened - thanks Peter).</description></item><item><title>STRIDE threat modeling on Kubernetes pt.4/6: Information disclosure</title><link>http://maxgio92.github.io/posts/k8s-stride-04-information-disclosure/</link><pubDate>Mon, 23 Mar 2020 18:36:15 +0200</pubDate><guid>http://maxgio92.github.io/posts/k8s-stride-04-information-disclosure/</guid><description>This is the fourth part of a series about STRIDE threat modeling in Kubernetes. In the previous part we talked about repudiation, instead today we&amp;rsquo;ll going to address information disclosure.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>kubernetes on Maxgio&#39;s blog</title>
+    <link>http://maxgio92.github.io/categories/kubernetes/</link>
+    <description>Recent content in kubernetes on Maxgio&#39;s blog</description>
+    <image>
+      <url>http://maxgio92.github.io/papermod-cover.png</url>
+      <link>http://maxgio92.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 05 Jul 2021 14:05:00 +0200</lastBuildDate><atom:link href="http://maxgio92.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.6/6: Elevation of privilege</title>
+      <link>http://maxgio92.github.io/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</link>
+      <pubDate>Mon, 05 Jul 2021 14:05:00 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</guid>
+      <description>Hello everyone, a long time has passed after the 5th part of this journey through STRIDE thread modeling in Kubernetes has been published. If you recall well, STRIDE is a model of threats for identifying security threats, by providing a mnemonic for security threats in six categories:
+ Spoofing Tampering Repudiation Information disclosure Denial of service Elevation of privilege  In this last chapter we&amp;rsquo;ll talk about elevation of privilege. Well, this category can be very wide, but let&amp;rsquo;s start thinking about what it can comprises and what we can do against this category of threats.</description>
+    </item>
+    
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.5/6: Denial of service</title>
+      <link>http://maxgio92.github.io/posts/k8s-stride-05-denial-of-service/</link>
+      <pubDate>Mon, 07 Sep 2020 18:36:15 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/k8s-stride-05-denial-of-service/</guid>
+      <description>I&amp;rsquo;m back after a long time with the fifth episode of this mini-series about STRIDE threat modeling in Kubernetes. In the previous one we talked about Information disclosure. This part is about the D that stands for Denial Of Service.
+DOS is the attempt to making a resource unavailable. For instance, a Kubernetes dashboard is left exposed on the Internet, allowing anyone to deploy containers on your company&amp;rsquo;s infrastructure to mine cryptocurrency and starve your legitimate applications of CPU (really happened - thanks Peter).</description>
+    </item>
+    
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.4/6: Information disclosure</title>
+      <link>http://maxgio92.github.io/posts/k8s-stride-04-information-disclosure/</link>
+      <pubDate>Mon, 23 Mar 2020 18:36:15 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/k8s-stride-04-information-disclosure/</guid>
+      <description>This is the fourth part of a series about STRIDE threat modeling in Kubernetes. In the previous part we talked about repudiation, instead today we&amp;rsquo;ll going to address information disclosure.
 Information disclosure happens with data leaks or data breaches, whenever a system that is designed to be closed to an eavesdropper unintentionally reveals some information to unauthorized parties.
-To prevent this we should protect data in transit and at rest by guaranteeing confidentiality, which can be guaranteed with encryption.</description></item><item><title>STRIDE threat modeling on Kubernetes pt.3/6: Repudiation</title><link>http://maxgio92.github.io/posts/k8s-stride-03-repudiation/</link><pubDate>Sun, 23 Feb 2020 18:36:15 +0200</pubDate><guid>http://maxgio92.github.io/posts/k8s-stride-03-repudiation/</guid><description>Hi all, this is the third part of this little series about STRIDE threat modeling on Kubernetes. Previously we talked about Tampering; today we talk about Repudiation.
+To prevent this we should protect data in transit and at rest by guaranteeing confidentiality, which can be guaranteed with encryption.</description>
+    </item>
+    
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.3/6: Repudiation</title>
+      <link>http://maxgio92.github.io/posts/k8s-stride-03-repudiation/</link>
+      <pubDate>Sun, 23 Feb 2020 18:36:15 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/k8s-stride-03-repudiation/</guid>
+      <description>Hi all, this is the third part of this little series about STRIDE threat modeling on Kubernetes. Previously we talked about Tampering; today we talk about Repudiation.
 Repudiation is the ability to cast doubt on something that happened. What typically happens is that the attacker aims to deny the authorship of his actions.
 Generally the opposite and thus the desired goal is prooving:
-What When Where Why Who How on certain actions.</description></item><item><title>STRIDE threat modeling on Kubernetes pt.2/6: Tampering</title><link>http://maxgio92.github.io/posts/k8s-stride-02-tampering/</link><pubDate>Tue, 11 Feb 2020 18:36:15 +0200</pubDate><guid>http://maxgio92.github.io/posts/k8s-stride-02-tampering/</guid><description>In the previous post of this little series we talked about preventing spoofing on Kubernetes. Today we&amp;rsquo;ll talk about the T of STRIDE: Tampering.
+ What When Where Why Who How  on certain actions.</description>
+    </item>
+    
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.2/6: Tampering</title>
+      <link>http://maxgio92.github.io/posts/k8s-stride-02-tampering/</link>
+      <pubDate>Tue, 11 Feb 2020 18:36:15 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/k8s-stride-02-tampering/</guid>
+      <description>In the previous post of this little series we talked about preventing spoofing on Kubernetes. Today we&amp;rsquo;ll talk about the T of STRIDE: Tampering.
 Tampering is the act of changing something in a malicious way, to gain extra privileges or for denial of service.
 Generally for preventing tampering is important to:
-limit the access to critical components; control the access to critical components; Furthermore, it&amp;rsquo;s important to watch for evidence of tampering.</description></item><item><title>STRIDE threat modeling on Kubernetes pt.1/6: Spoofing</title><link>http://maxgio92.github.io/posts/k8s-stride-01-spoofing/</link><pubDate>Mon, 03 Feb 2020 18:36:15 +0200</pubDate><guid>http://maxgio92.github.io/posts/k8s-stride-01-spoofing/</guid><description>As it comes from the power of the open source and Borg, Kubernetes is an ecosystem very flexible. Only the extensibility of the APIs as for the CRDs opens the world to a vastity of opportunities to build architectures upon it (see the SIG&amp;rsquo;s Cluster API, the AWS EKS and Fargate combinations, etc.).
-At the same time can be complex to manage, and everyone - or almost everyone - knows that is not enough to get applications working; as part of the administration it is vital to secure your cluster and so your application with your data to get the job done.</description></item></channel></rss>
+ limit the access to critical components; control the access to critical components;  Furthermore, it&amp;rsquo;s important to watch for evidence of tampering.</description>
+    </item>
+    
+    <item>
+      <title>STRIDE threat modeling on Kubernetes pt.1/6: Spoofing</title>
+      <link>http://maxgio92.github.io/posts/k8s-stride-01-spoofing/</link>
+      <pubDate>Mon, 03 Feb 2020 18:36:15 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/k8s-stride-01-spoofing/</guid>
+      <description>As it comes from the power of the open source and Borg, Kubernetes is an ecosystem very flexible. Only the extensibility of the APIs as for the CRDs opens the world to a vastity of opportunities to build architectures upon it (see the SIG&amp;rsquo;s Cluster API, the AWS EKS and Fargate combinations, etc.).
+At the same time can be complex to manage, and everyone - or almost everyone - knows that is not enough to get applications working; as part of the administration it is vital to secure your cluster and so your application with your data to get the job done.</description>
+    </item>
+    
+  </channel>
+</rss>

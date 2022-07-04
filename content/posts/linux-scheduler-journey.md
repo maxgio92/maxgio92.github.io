@@ -23,34 +23,8 @@ $ perf stat -e sched:sched_switch --timeout 1000
 
 During this journey inside Linux, I've written notes as it helps me to digest and re-process in my own way the informations I learn. Then I thought: "Maybe they're useful to someone. Why not share them?”.
 
-So here I am with with a blog:
+So here I am with with a blog.
 
-### Table of contents
-
-1. [Introduction](#1-resource-sharing-is-the-key)
-2. [Time accounting](#2-time-accounting)
-    1. [The runtime](#the-runtime)
-    2. [The virtual runtime](#the-virtual-runtime)
-    3. [The schedule entities](#the-schedule-entities)
-    4. [The weight](#the-weight)
-    5. [Update of the virtual runtime](#update-of-the-virtual-runtime)
-3. [Tasks selection](#3-tasks-selection)
-    1. [The runqueues](#the-runqueues)
-    2. [Wrapping up the structures](#wrapping-up-the-structures)
-    3. [Weight for task groups](#weight-for-task-groups)
-    4. [Wrapping up the time accounting](#wrapping-up-the-time-accounting)
-    5. [Runqueues population](#runqueues-population)
-    6. [The scheduler entrypoint](#the-scheduler-entrypoint)
-4. [Sleep and wake up](#4-sleep-and-wake-up)
-    1. [Sleep](#sleep)
-    2. [Wake up](#wake-up)
-        1. [Signals](#signals)
-5. [Context switch and preemption](#5-context-switch-and-preemption)
-    1. [Voluntary](#voluntary)
-    2. [Nonvoluntary: preemption](#nonvoluntary-preemption)
-        1. [User space](#user-space)
-        2. [Kernel space](#kernel-space)
-6. [Wrapping up](#wrapping-up)
 ---
 
 ## 1. Resource sharing is the key!

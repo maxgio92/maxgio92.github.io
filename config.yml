@@ -41,7 +41,7 @@ languages:
                 - name: Github
                   url: https://github.com/maxgio92
                 - name: Twitter
-                  url: https://twitter/maxgio92
+                  url: https://twitter.com/maxgio92
 
 outputs:
     home:

@@ -42,6 +42,8 @@ languages:
                   url: https://github.com/maxgio92
                 - name: Twitter
                   url: https://twitter.com/maxgio92
+                - name: Mastodon
+                  url: https://hachyderm.io/@maxgio92
 
 outputs:
     home:
@@ -91,6 +93,8 @@ params:
           url: "https://github.com/maxgio92"
         - name: Twitter
           url: "https://twitter.com/maxgio92"
+        - name: Mastodon
+          url: https://hachyderm.io/@maxgio92
         - name: linkedin
           url: "https://www.linkedin.com/in/massimilianogiovagnoli"
         - name: RsS

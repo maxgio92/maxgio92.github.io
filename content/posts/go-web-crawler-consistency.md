@@ -1,10 +1,10 @@
 ---
-title: "How I improved consistency in a Go web crawler with retry logics and tuning the HTTP client"
-date: 2023-08-30T20:05:00+02:00
-tags: [go, software]
+title: "How I improved consistency and performance in a Go crawler with retry logics and network tuning"
+date: 2023-09-04T10:20:00+02:00
+tags: [go, performance, consistency, optimization]
 categories: [go]
-slug: how-i-improved-consistency-go-web-crawler-with-retry-tuning-http-client
-draft: true 
+slug: improving-consistency-performance-go-crawler-retry-logics-http-client-tuning
+draft: false 
 ---
 
 # Introduction

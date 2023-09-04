@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>performance on Maxgio&#39;s blog</title>
+    <link>http://maxgio92.github.io/tags/performance/</link>
+    <description>Recent content in performance on Maxgio&#39;s blog</description>
+    <image>
+      <url>http://maxgio92.github.io/papermod-cover.png</url>
+      <link>http://maxgio92.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 04 Sep 2023 10:20:00 +0200</lastBuildDate><atom:link href="http://maxgio92.github.io/tags/performance/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How I improved consistency and performance in a Go crawler with retry logics and tuning the HTTP client</title>
+      <link>http://maxgio92.github.io/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</link>
+      <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
+      
+      <guid>http://maxgio92.github.io/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</guid>
+      <description>Introduction wfind is a simple web crawler for files and folders in web pages hyerarchies. The goal is basically the same of GNU find for file systems. At the same time it&amp;rsquo;s inspired by GNU wget, and it merges the find features applied to files and directories exposed as HTML web resources.
+In this blog we&amp;rsquo;ll go through the way I improved consistency in this crawler, by implementing retry logics and tuning network and transport in the HTTP client.</description>
+    </item>
+    
+  </channel>
+</rss>

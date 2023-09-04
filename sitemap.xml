@@ -3,12 +3,57 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://maxgio92.github.io/posts/linux-scheduler-journey/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
+    <loc>http://maxgio92.github.io/categories/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/categories/</loc>
+    <loc>http://maxgio92.github.io/tags/consistency/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/tags/go/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/categories/go/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/tags/optimization/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/tags/performance/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/posts/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/tags/</loc>
+    <lastmod>2023-09-04T10:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://maxgio92.github.io/posts/linux-scheduler-journey/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   
@@ -23,22 +68,7 @@
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://maxgio92.github.io/posts/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://maxgio92.github.io/tags/scheduler/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://maxgio92.github.io/tags/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   

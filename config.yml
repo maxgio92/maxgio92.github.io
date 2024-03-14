@@ -1,4 +1,4 @@
-baseURL: 'http://maxgio92.github.io/'
+baseURL: 'https://blog.maxgio.me/'
 paginate: 5
 title: Maxgio's blog
 theme: PaperMod

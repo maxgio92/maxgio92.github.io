@@ -2,83 +2,83 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on Maxgio&#39;s blog</title>
-    <link>http://maxgio92.github.io/tags/</link>
+    <link>https://blog.maxgio.me/tags/</link>
     <description>Recent content in Tags on Maxgio&#39;s blog</description>
     <image>
-      <url>http://maxgio92.github.io/papermod-cover.png</url>
-      <link>http://maxgio92.github.io/papermod-cover.png</link>
+      <url>https://blog.maxgio.me/papermod-cover.png</url>
+      <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 04 Sep 2023 10:20:00 +0200</lastBuildDate><atom:link href="http://maxgio92.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Sep 2023 10:20:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>consistency</title>
-      <link>http://maxgio92.github.io/tags/consistency/</link>
+      <link>https://blog.maxgio.me/tags/consistency/</link>
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/consistency/</guid>
+      <guid>https://blog.maxgio.me/tags/consistency/</guid>
       <description></description>
     </item>
     
     <item>
       <title>go</title>
-      <link>http://maxgio92.github.io/tags/go/</link>
+      <link>https://blog.maxgio.me/tags/go/</link>
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/go/</guid>
+      <guid>https://blog.maxgio.me/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
       <title>optimization</title>
-      <link>http://maxgio92.github.io/tags/optimization/</link>
+      <link>https://blog.maxgio.me/tags/optimization/</link>
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/optimization/</guid>
+      <guid>https://blog.maxgio.me/tags/optimization/</guid>
       <description></description>
     </item>
     
     <item>
       <title>performance</title>
-      <link>http://maxgio92.github.io/tags/performance/</link>
+      <link>https://blog.maxgio.me/tags/performance/</link>
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/performance/</guid>
+      <guid>https://blog.maxgio.me/tags/performance/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
-      <link>http://maxgio92.github.io/tags/linux/</link>
+      <link>https://blog.maxgio.me/tags/linux/</link>
       <pubDate>Fri, 24 Jun 2022 00:00:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/linux/</guid>
+      <guid>https://blog.maxgio.me/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>scheduler</title>
-      <link>http://maxgio92.github.io/tags/scheduler/</link>
+      <link>https://blog.maxgio.me/tags/scheduler/</link>
       <pubDate>Fri, 24 Jun 2022 00:00:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/scheduler/</guid>
+      <guid>https://blog.maxgio.me/tags/scheduler/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kubernetes</title>
-      <link>http://maxgio92.github.io/tags/kubernetes/</link>
+      <link>https://blog.maxgio.me/tags/kubernetes/</link>
       <pubDate>Mon, 05 Jul 2021 14:05:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/kubernetes/</guid>
+      <guid>https://blog.maxgio.me/tags/kubernetes/</guid>
       <description></description>
     </item>
     
     <item>
       <title>security</title>
-      <link>http://maxgio92.github.io/tags/security/</link>
+      <link>https://blog.maxgio.me/tags/security/</link>
       <pubDate>Mon, 05 Jul 2021 14:05:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/tags/security/</guid>
+      <guid>https://blog.maxgio.me/tags/security/</guid>
       <description></description>
     </item>
     

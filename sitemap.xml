@@ -3,122 +3,122 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://maxgio92.github.io/categories/</loc>
+    <loc>https://blog.maxgio.me/categories/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/consistency/</loc>
+    <loc>https://blog.maxgio.me/tags/consistency/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/go/</loc>
+    <loc>https://blog.maxgio.me/tags/go/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/categories/go/</loc>
+    <loc>https://blog.maxgio.me/categories/go/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</loc>
+    <loc>https://blog.maxgio.me/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/</loc>
+    <loc>https://blog.maxgio.me/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/optimization/</loc>
+    <loc>https://blog.maxgio.me/tags/optimization/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/performance/</loc>
+    <loc>https://blog.maxgio.me/tags/performance/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/</loc>
+    <loc>https://blog.maxgio.me/posts/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/</loc>
+    <loc>https://blog.maxgio.me/tags/</loc>
     <lastmod>2023-09-04T10:20:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/linux-scheduler-journey/</loc>
+    <loc>https://blog.maxgio.me/posts/linux-scheduler-journey/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/linux/</loc>
+    <loc>https://blog.maxgio.me/tags/linux/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/categories/linux/</loc>
+    <loc>https://blog.maxgio.me/categories/linux/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/scheduler/</loc>
+    <loc>https://blog.maxgio.me/tags/scheduler/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/kubernetes/</loc>
+    <loc>https://blog.maxgio.me/tags/kubernetes/</loc>
     <lastmod>2021-07-05T14:05:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/categories/kubernetes/</loc>
+    <loc>https://blog.maxgio.me/categories/kubernetes/</loc>
     <lastmod>2021-07-05T14:05:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/tags/security/</loc>
+    <loc>https://blog.maxgio.me/tags/security/</loc>
     <lastmod>2021-07-05T14:05:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</loc>
+    <loc>https://blog.maxgio.me/posts/stride-threat-modeling-kubernetes-elevation-of-privileges/</loc>
     <lastmod>2021-07-05T14:05:00+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/k8s-stride-05-denial-of-service/</loc>
+    <loc>https://blog.maxgio.me/posts/k8s-stride-05-denial-of-service/</loc>
     <lastmod>2020-09-07T18:36:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/k8s-stride-04-information-disclosure/</loc>
+    <loc>https://blog.maxgio.me/posts/k8s-stride-04-information-disclosure/</loc>
     <lastmod>2020-03-23T18:36:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/k8s-stride-03-repudiation/</loc>
+    <loc>https://blog.maxgio.me/posts/k8s-stride-03-repudiation/</loc>
     <lastmod>2020-02-23T18:36:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/k8s-stride-02-tampering/</loc>
+    <loc>https://blog.maxgio.me/posts/k8s-stride-02-tampering/</loc>
     <lastmod>2020-02-11T18:36:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/posts/k8s-stride-01-spoofing/</loc>
+    <loc>https://blog.maxgio.me/posts/k8s-stride-01-spoofing/</loc>
     <lastmod>2020-02-03T18:36:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://maxgio92.github.io/series/</loc>
+    <loc>https://blog.maxgio.me/series/</loc>
   </url>
   
 </urlset>

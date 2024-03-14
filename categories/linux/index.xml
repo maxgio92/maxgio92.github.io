@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>linux on Maxgio&#39;s blog</title>
-    <link>http://maxgio92.github.io/categories/linux/</link>
+    <link>https://blog.maxgio.me/categories/linux/</link>
     <description>Recent content in linux on Maxgio&#39;s blog</description>
     <image>
-      <url>http://maxgio92.github.io/papermod-cover.png</url>
-      <link>http://maxgio92.github.io/papermod-cover.png</link>
+      <url>https://blog.maxgio.me/papermod-cover.png</url>
+      <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 24 Jun 2022 00:00:00 +0200</lastBuildDate><atom:link href="http://maxgio92.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 24 Jun 2022 00:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A journey into the Linux scheduler</title>
-      <link>http://maxgio92.github.io/posts/linux-scheduler-journey/</link>
+      <link>https://blog.maxgio.me/posts/linux-scheduler-journey/</link>
       <pubDate>Fri, 24 Jun 2022 00:00:00 +0200</pubDate>
       
-      <guid>http://maxgio92.github.io/posts/linux-scheduler-journey/</guid>
+      <guid>https://blog.maxgio.me/posts/linux-scheduler-journey/</guid>
       <description>Two years ago more or less I started my journey in Linux. I was scared at first and I didn&amp;rsquo;t know where to start from. But then I decided to buy a book - and what a book! - in order to follow a path.
 Along the way, I integrated the material with up-to-date documentation from kernel.org and source code. In the meantime, I started to learn C a bit so that I also could have played with what I was learning, step by step.</description>
     </item>

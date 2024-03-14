@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: http://maxgio92.github.io/sitemap.xml
+Sitemap: https://blog.maxgio.me/sitemap.xml

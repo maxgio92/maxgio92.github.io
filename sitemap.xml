@@ -13,11 +13,6 @@
   </url>
   
   <url>
-    <loc>https://blog.maxgio.me/categories/ebpf/</loc>
-    <lastmod>2024-06-23T21:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://blog.maxgio.me/</loc>
     <lastmod>2024-06-23T21:00:00+02:00</lastmod>
   </url>
@@ -34,6 +29,11 @@
   
   <url>
     <loc>https://blog.maxgio.me/tags/profiling/</loc>
+    <lastmod>2024-06-23T21:00:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/categories/profiling/</loc>
     <lastmod>2024-06-23T21:00:00+02:00</lastmod>
   </url>
   

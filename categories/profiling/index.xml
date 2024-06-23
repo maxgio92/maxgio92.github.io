@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>ebpf on Maxgio&#39;s blog</title>
-    <link>https://blog.maxgio.me/categories/ebpf/</link>
-    <description>Recent content in ebpf on Maxgio&#39;s blog</description>
+    <title>profiling on Maxgio&#39;s blog</title>
+    <link>https://blog.maxgio.me/categories/profiling/</link>
+    <description>Recent content in profiling on Maxgio&#39;s blog</description>
     <image>
       <url>https://blog.maxgio.me/papermod-cover.png</url>
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 23 Jun 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/categories/ebpf/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 23 Jun 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/categories/profiling/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Unleashing the power of frame pointers for profilers pt.1 - The execution environment</title>
       <link>https://blog.maxgio.me/posts/unleashing-power-frame-poiners-execution-environment/</link>

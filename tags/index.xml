@@ -9,7 +9,34 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 04 Sep 2023 10:20:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 23 Jun 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ebpf</title>
+      <link>https://blog.maxgio.me/tags/ebpf/</link>
+      <pubDate>Sun, 23 Jun 2024 21:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/ebpf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>optimization</title>
+      <link>https://blog.maxgio.me/tags/optimization/</link>
+      <pubDate>Sun, 23 Jun 2024 21:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/optimization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>profiling</title>
+      <link>https://blog.maxgio.me/tags/profiling/</link>
+      <pubDate>Sun, 23 Jun 2024 21:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/profiling/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>consistency</title>
       <link>https://blog.maxgio.me/tags/consistency/</link>
@@ -25,15 +52,6 @@
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
       <guid>https://blog.maxgio.me/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>optimization</title>
-      <link>https://blog.maxgio.me/tags/optimization/</link>
-      <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
-      
-      <guid>https://blog.maxgio.me/tags/optimization/</guid>
       <description></description>
     </item>
     

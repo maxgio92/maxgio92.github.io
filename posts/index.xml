@@ -9,7 +9,18 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 04 Sep 2023 10:20:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 23 Jun 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unleashing the power of frame pointers for profilers pt.1 - The execution environment</title>
+      <link>https://blog.maxgio.me/posts/unleashing-power-frame-poiners-execution-environment/</link>
+      <pubDate>Sun, 23 Jun 2024 21:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/posts/unleashing-power-frame-poiners-execution-environment/</guid>
+      <description>Profiling the CPU allows us to analyze the program&amp;rsquo;s performance, identify bottlenecks, and optimize its efficiency.
+Have you ever wondered what happens behind the scenes when you run a program and how to account for CPU time for the actual program functions? And even more, how to write such a tool to profile the program?
+Even though great open-source projects provide continuous profiling with vast support for compiled, JITed, and interpreted, languages, with or without debug info, with or without frame pointers, etc.</description>
+    </item>
+    
     <item>
       <title>How I improved consistency and performance in a Go crawler with retry logics and network tuning</title>
       <link>https://blog.maxgio.me/posts/improving-consistency-performance-go-crawler-retry-logics-http-client-tuning/</link>

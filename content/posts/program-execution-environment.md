@@ -258,7 +258,7 @@ Because a `RET` (function returns) pops a stack frame out of the stack, when con
 You can see it in the following picture a simplified scheme of the linked list of frame pointers:
 
 ![stack-walking](https://raw.githubusercontent.com/maxgio92/notes/5eeff1703e85c00799e7af0117a3898918d7a438/content/notes/stack-walking.avif)
-> I didn't manage to find the author of this diagram. If you do, please let me know so that I can give the right credits, thank you.
+> Credits for this diagram to [Javier Honduvilla Coto](https://hondu.co).
 
 This technique is particularly useful for profilers and debuggers. The following is a basic example of what a profiler could retrieve, leveraging frame pointers:
 
@@ -269,7 +269,7 @@ $ ./my-profiler run --pid 12345
 32.1%     main.bar;runtime.main;runtime.goexit;
 ```
 
-Finally, it's worth mentioning that nothing comes for free. While including frame pointers is good for observability in general, it comes with the cost of increased code size. This can translate to worst hit rates in the CPU instruction cache, possibly leading to more instructions that need to be fetched from main memory.
+Finally, it's worth mentioning that nothing comes for free. While including frame pointers is good for observability in general, it comes with the cost of increased code size. This can translate to worst hit rates in the CPU instruction cache, possibly leading to more instructions that need to be fetched from main memory. Also, when frame pointers are not produced, observability tools like debuggers can still rely on metadata produced by compilers: for example, Delve relies on the `debug_frame` section in the Go binary, that contains informations about the function calls and their locations in memory.
 
 And this comes to the next episode of this series, which will dive into how to write a basic low-overhead, kernel-assisted CPU profiler leveraging eBPF, that will produce a result like the one above!
 

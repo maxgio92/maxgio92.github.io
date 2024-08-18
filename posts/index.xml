@@ -9,13 +9,24 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 23 Jun 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 18 Aug 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unleashing the power of frame pointers for profiling pt.2 - Writing a simple profiler</title>
+      <link>https://blog.maxgio.me/posts/unleashing-power-frame-pointers-writing-simple-continuous-profiler/</link>
+      <pubDate>Sun, 18 Aug 2024 21:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/posts/unleashing-power-frame-pointers-writing-simple-continuous-profiler/</guid>
+      <description>In the previous blog about the program execution environment, we introduced the concept of stack unwinding with frame pointers as one of the techniques leveraged for profiling a program.
+In this blog, we&amp;rsquo;ll see practically how we can build a simple sampling-based continuous profiler.
+Since we don’t want the application to necessarily be instrumented, we can use the Linux kernel instrumentation. Thanks to eBPF we’re able to dynamically load and attach the profiler program to specific kernel entry points, limiting the introduced overhead by exchanging data with userspace through eBPF maps.</description>
+    </item>
+    
     <item>
       <title>Unleashing the power of frame pointers pt.1 - The execution environment</title>
-      <link>https://blog.maxgio.me/posts/unleashing-power-frame-poiners-execution-environment/</link>
+      <link>https://blog.maxgio.me/posts/unleashing-power-frame-pointers-execution-environment/</link>
       <pubDate>Sun, 23 Jun 2024 21:00:00 +0200</pubDate>
       
-      <guid>https://blog.maxgio.me/posts/unleashing-power-frame-poiners-execution-environment/</guid>
+      <guid>https://blog.maxgio.me/posts/unleashing-power-frame-pointers-execution-environment/</guid>
       <description>Profiling the CPU allows us to analyze the program&amp;rsquo;s performance, identify bottlenecks, and optimize its efficiency.
 Have you ever wondered what happens behind the scenes when you run a program and how to account for CPU time for the actual program functions? And even more, how to write such a tool to profile the program?
 Even though great open-source projects provide continuous profiling with vast support for compiled, JITed, and interpreted, languages, with or without debug info, with or without frame pointers, etc.</description>

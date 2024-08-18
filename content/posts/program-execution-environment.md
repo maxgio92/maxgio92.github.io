@@ -3,7 +3,7 @@ Title: 'Unleashing the power of frame pointers pt.1 - The execution environment'
 date: 2024-06-23T21:00:00+02:00
 tags: [profiling, optimization, ebpf]
 categories: [profiling]
-slug: unleashing-power-frame-poiners-execution-environment
+slug: unleashing-power-frame-pointers-execution-environment
 draft: false
 ---
 

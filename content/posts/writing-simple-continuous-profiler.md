@@ -1,5 +1,5 @@
 ---
-Title: Unleashing the power of frame pointers for profiling pt.2 - Writing a simple profiler
+Title: Unleashing the power of frame pointers for profiling pt.2 - Writing a basic profiler
 date: 2024-08-18T21:00:00+02:00
 tags: [profiling, optimization, ebpf]
 categories: [profiling]
@@ -9,7 +9,7 @@ draft: false
 
 In the previous blog about the program execution environment, we introduced the concept of stack unwinding with frame pointers as one of the techniques leveraged for profiling a program.
 
-In this blog, we'll see practically how we can build a simple sampling-based continuous profiler.
+In this blog, we'll see practically how we can build a basic sampling-based continuous profiler.
 
 Since we don’t want the application to necessarily be instrumented, we can use the Linux kernel instrumentation. Thanks to eBPF we’re able to dynamically load and attach the profiler program to specific kernel entry points, limiting the introduced overhead by exchanging data with userspace through eBPF maps.
 

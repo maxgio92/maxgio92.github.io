@@ -9,7 +9,20 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 18 Aug 2024 21:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 05 Sep 2026 00:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Binary I Ship Is the Binary I Want to Test</title>
+      <link>https://blog.maxgio.me/posts/the-binary-i-ship-is-the-binary-i-want-to-test/</link>
+      <pubDate>Sat, 05 Sep 2026 00:00:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/posts/the-binary-i-ship-is-the-binary-i-want-to-test/</guid>
+      <description>This article expands on my OpenSouthCode 2026 talk.
+I have a slightly awkward question for anyone who collects code coverage in CI:
+Are you testing the same binary that you ship?
+For many projects, the honest answer is no.
+Traditional coverage starts at compile time. Go builds need -cover. GCC uses --coverage, shorthand for -fprofile-arcs -ftest-coverage when compiling and -lgcov when linking. Clang&amp;rsquo;s LLVM source-based coverage uses -fprofile-instr-generate -fcoverage-mapping. llvm-profdata indexes the raw profile, and llvm-cov creates the report.</description>
+    </item>
+    
     <item>
       <title>Unleashing the power of frame pointers for profiling pt.2 - Writing a basic profiler</title>
       <link>https://blog.maxgio.me/posts/unleashing-power-frame-pointers-writing-simple-continuous-profiler/</link>

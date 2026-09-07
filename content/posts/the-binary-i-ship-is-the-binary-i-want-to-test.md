@@ -1,5 +1,5 @@
 ---
-title: The Binary I Ship Is the Binary I Want to Test
+title: The binary I ship is the binary I want to test
 date: 2026-08-22T00:00:00+02:00
 tags: [ebpf, testing, coverage]
 categories: [ebpf]

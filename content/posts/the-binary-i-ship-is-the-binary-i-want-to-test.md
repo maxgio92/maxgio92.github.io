@@ -250,7 +250,7 @@ Third, I want to stress the userspace runtime. The current results support the i
 
 Some work has already landed upstream. libbpfgo now supports single-uprobe attachment with a per-probe `bpf_cookie` through `AttachUprobeWithOpts`. Further bpftime changes still need upstream work.
 
-## Coverage should describe the artefact
+## Wrap up
 
 Build-time coverage remains the right tool when I need detailed source-level line or branch data and can test the instrumented build with confidence.
 
@@ -258,6 +258,4 @@ xcover addresses a different problem. It gives me language-neutral function cove
 
 That trade is measurable, limited, and useful today.
 
-The principle behind it is the bit I care about most:
-
-**The binary I ship should be the binary I test.**
+More than the tooling, though, I keep coming back to the idea that started all of this. Coverage should describe the artefact users actually run. Or, put simply: the binary I ship should be the binary I test.

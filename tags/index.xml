@@ -9,7 +9,43 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 22 Aug 2026 00:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Aug 2026 13:14:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>amd</title>
+      <link>https://blog.maxgio.me/tags/amd/</link>
+      <pubDate>Sun, 30 Aug 2026 13:14:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/amd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>graphics</title>
+      <link>https://blog.maxgio.me/tags/graphics/</link>
+      <pubDate>Sun, 30 Aug 2026 13:14:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/graphics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://blog.maxgio.me/tags/linux/</link>
+      <pubDate>Sun, 30 Aug 2026 13:14:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wayland</title>
+      <link>https://blog.maxgio.me/tags/wayland/</link>
+      <pubDate>Sun, 30 Aug 2026 13:14:00 +0200</pubDate>
+      
+      <guid>https://blog.maxgio.me/tags/wayland/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>coverage</title>
       <link>https://blog.maxgio.me/tags/coverage/</link>
@@ -79,15 +115,6 @@
       <pubDate>Mon, 04 Sep 2023 10:20:00 +0200</pubDate>
       
       <guid>https://blog.maxgio.me/tags/performance/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>https://blog.maxgio.me/tags/linux/</link>
-      <pubDate>Fri, 24 Jun 2022 00:00:00 +0200</pubDate>
-      
-      <guid>https://blog.maxgio.me/tags/linux/</guid>
       <description></description>
     </item>
     

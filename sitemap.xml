@@ -3,8 +3,53 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://blog.maxgio.me/tags/amd/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://blog.maxgio.me/categories/</loc>
-    <lastmod>2026-08-22T00:00:00+02:00</lastmod>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/tags/graphics/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/tags/linux/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/categories/linux/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/posts/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/tags/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.maxgio.me/tags/wayland/</loc>
+    <lastmod>2026-08-30T13:14:00+02:00</lastmod>
   </url>
   
   <url>
@@ -19,21 +64,6 @@
   
   <url>
     <loc>https://blog.maxgio.me/categories/ebpf/</loc>
-    <lastmod>2026-08-22T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.maxgio.me/</loc>
-    <lastmod>2026-08-22T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.maxgio.me/posts/</loc>
-    <lastmod>2026-08-22T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.maxgio.me/tags/</loc>
     <lastmod>2026-08-22T00:00:00+02:00</lastmod>
   </url>
   
@@ -99,16 +129,6 @@
   
   <url>
     <loc>https://blog.maxgio.me/posts/linux-scheduler-journey/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.maxgio.me/tags/linux/</loc>
-    <lastmod>2022-06-24T00:00:00+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.maxgio.me/categories/linux/</loc>
     <lastmod>2022-06-24T00:00:00+02:00</lastmod>
   </url>
   

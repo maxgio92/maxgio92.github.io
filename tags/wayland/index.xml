@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>linux on Maxgio&#39;s blog</title>
-    <link>https://blog.maxgio.me/categories/linux/</link>
-    <description>Recent content in linux on Maxgio&#39;s blog</description>
+    <title>wayland on Maxgio&#39;s blog</title>
+    <link>https://blog.maxgio.me/tags/wayland/</link>
+    <description>Recent content in wayland on Maxgio&#39;s blog</description>
     <image>
       <url>https://blog.maxgio.me/papermod-cover.png</url>
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 30 Aug 2026 13:14:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Aug 2026 13:14:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/wayland/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>From a frozen Telegram photo to the Linux graphics stack</title>
       <link>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</link>
@@ -19,16 +19,6 @@
       <description>1. The fullscreen photo that froze a laptop It was Sunday morning, I had a fever, and my plans extended no further than tea and feeling sorry for myself; troubleshooting a GPU failure was not on the list.
 I opened a photo from Telegram Web in Brave and switched it to fullscreen. The display froze. After failed attempts to recover it, I forced the Framework Laptop to restart.
 A TTY later showed Vulkan selecting my AMD Radeon 780M, followed by two warnings about dynamic-buffer limits whose timestamp placed them more than ten minutes after the next boot began.</description>
-    </item>
-    
-    <item>
-      <title>A journey into the Linux scheduler</title>
-      <link>https://blog.maxgio.me/posts/linux-scheduler-journey/</link>
-      <pubDate>Fri, 24 Jun 2022 00:00:00 +0200</pubDate>
-      
-      <guid>https://blog.maxgio.me/posts/linux-scheduler-journey/</guid>
-      <description>Two years ago more or less I started my journey in Linux. I was scared at first and I didn&amp;rsquo;t know where to start from. But then I decided to buy a book - and what a book! - in order to follow a path.
-Along the way, I integrated the material with up-to-date documentation from kernel.org and source code. In the meantime, I started to learn C a bit so that I also could have played with what I was learning, step by step.</description>
     </item>
     
   </channel>

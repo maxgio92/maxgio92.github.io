@@ -3,7 +3,8 @@ title: A frozen photo and the Linux graphics stack
 date: 2026-09-10T09:00:00+02:00
 tags: [linux, graphics, amd, wayland]
 categories: [linux]
-slug: from-telegram-freeze-to-linux-graphics-stack
+slug: a-frozen-photo-and-the-linux-graphics-stack
+aliases: [/posts/from-telegram-freeze-to-linux-graphics-stack/]
 draft: false
 ---
 

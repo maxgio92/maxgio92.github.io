@@ -9,11 +9,11 @@
       <link>https://blog.maxgio.me/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 30 Aug 2026 13:14:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Sep 2026 09:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>From a frozen Telegram photo to the Linux graphics stack</title>
       <link>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</link>
-      <pubDate>Sun, 30 Aug 2026 13:14:00 +0200</pubDate>
+      <pubDate>Thu, 10 Sep 2026 09:00:00 +0200</pubDate>
       
       <guid>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</guid>
       <description>1. The fullscreen photo that froze a laptop It was Sunday morning, I had a fever, and my plans extended no further than tea and feeling sorry for myself; troubleshooting a GPU failure was not on the list.

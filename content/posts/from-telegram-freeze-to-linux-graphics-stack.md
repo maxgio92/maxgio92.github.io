@@ -1,5 +1,5 @@
 ---
-title: From a frozen Telegram photo to the Linux graphics stack
+title: A frozen photo and the Linux graphics stack
 date: 2026-09-10T09:00:00+02:00
 tags: [linux, graphics, amd, wayland]
 categories: [linux]

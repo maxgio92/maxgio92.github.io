@@ -12,10 +12,10 @@
     <lastBuildDate>Thu, 10 Sep 2026 09:00:00 +0200</lastBuildDate><atom:link href="https://blog.maxgio.me/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A frozen photo and the Linux graphics stack</title>
-      <link>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</link>
+      <link>https://blog.maxgio.me/posts/a-frozen-photo-and-the-linux-graphics-stack/</link>
       <pubDate>Thu, 10 Sep 2026 09:00:00 +0200</pubDate>
       
-      <guid>https://blog.maxgio.me/posts/from-telegram-freeze-to-linux-graphics-stack/</guid>
+      <guid>https://blog.maxgio.me/posts/a-frozen-photo-and-the-linux-graphics-stack/</guid>
       <description>1. The fullscreen photo that froze a laptop It was Sunday morning, I had a fever, and my plans extended no further than tea and feeling sorry for myself; troubleshooting a GPU failure was not on the list.
 I opened a photo from Telegram Web in Brave and switched it to fullscreen. The display froze. After failed attempts to recover it, I forced the Framework Laptop to restart.
 A TTY later showed Vulkan selecting my AMD Radeon 780M, followed by two warnings about dynamic-buffer limits whose timestamp placed them more than ten minutes after the next boot began.</description>
